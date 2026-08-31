@@ -1,5 +1,8 @@
 <!DOCTYPE html>
 <html lang="vi">
+<!-- Thêm trước thẻ </head> -->
+<script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database-compat.js"></script>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
@@ -8,6 +11,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;600;800;900&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    
     <style>
         :root {
             --gold: #D4AF37;
@@ -462,7 +466,6 @@
     </style>
 </head>
 <body>
-
     <!-- PRELOADER -->
     <div id="preloader" onclick="enterSite()">
         <div class="loader-logo"><i class="fas fa-cross"></i></div>
@@ -629,109 +632,187 @@
     </div>
 
     <script>
-        // ================== ÂM THANH ==================
-        let audioCtx = null;
-        let soundEnabled = true;
+        // ========== FIREBASE CONFIG ==========
+const firebaseConfig = {
+    apiKey: "AIzaSyATNeLyDKlyeZgpJ0NdtmraAaOq6F8CrrA",
+    authDomain: "tntthoaan2.firebaseapp.com",
+    databaseURL: "https://tntthoaan2-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "tntthoaan2",
+    storageBucket: "tntthoaan2.firebasestorage.app",
+    messagingSenderId: "643181042469",
+    appId: "1:643181042469:web:f31dd1c3be290477fc98cc"
+};
 
-        function initAudio() {
-            if (!audioCtx) {
-                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            }
-        }
+// Khởi tạo Firebase
+firebase.initializeApp(firebaseConfig);
+const database = firebase.database();
 
-        function playClick(freq = 800) {
-            if (!soundEnabled) return;
-            try {
-                initAudio();
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-                gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.2);
-                osc.start();
-                osc.stop(audioCtx.currentTime + 0.2);
-            } catch(e) {}
-        }
+// ================== ÂM THANH ==================
+let audioCtx = null;
+let soundEnabled = true;
 
-        function playHover() {
-            if (!soundEnabled) return;
-            try {
-                initAudio();
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-                osc.type = 'triangle';
-                osc.frequency.setValueAtTime(1200, audioCtx.currentTime);
-                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
-                osc.start();
-                osc.stop(audioCtx.currentTime + 0.1);
-            } catch(e) {}
-        }
+function initAudio() {
+    if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+}
 
-        function toggleSound() {
-            soundEnabled = !soundEnabled;
-            document.getElementById('soundIcon').className = soundEnabled ? 'fas fa-volume-up' : 'fas fa-volume-mute';
-            if (soundEnabled) playClick(1000);
-        }
+function playClick(freq = 800) {
+    if (!soundEnabled) return;
+    try {
+        initAudio();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.2);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.2);
+    } catch(e) {}
+}
 
-        // ================== PRELOADER ==================
-        function enterSite() {
-            initAudio();
-            playClick(600);
-            document.getElementById('preloader').style.opacity = '0';
-            document.getElementById('preloader').style.visibility = 'hidden';
-            // Thử tự phát âm thanh chào mừng
-            try {
-                if (soundEnabled) {
-                    setTimeout(() => playClick(800), 100);
-                    setTimeout(() => playClick(1000), 200);
-                }
-            } catch(e) {}
-        }
+function playHover() {
+    if (!soundEnabled) return;
+    try {
+        initAudio();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(1200, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.1);
+    } catch(e) {}
+}
 
-        // Mô phỏng thanh loading
-        let loadProgress = 0;
-        const loadInterval = setInterval(() => {
-            loadProgress += Math.random() * 15;
-            if (loadProgress > 100) loadProgress = 100;
-            document.getElementById('loaderBar').style.width = loadProgress + '%';
-            if (loadProgress >= 100) clearInterval(loadInterval);
-        }, 300);
+function toggleSound() {
+    soundEnabled = !soundEnabled;
+    document.getElementById('soundIcon').className = soundEnabled ? 'fas fa-volume-up' : 'fas fa-volume-mute';
+    if (soundEnabled) playClick(1000);
+}
 
-        // ================== ADMIN MODAL ==================
-        function openAdmin() {
-            playClick();
-            document.getElementById('adminModal').classList.add('active');
+// ================== PRELOADER ==================
+function enterSite() {
+    initAudio();
+    playClick(600);
+    document.getElementById('preloader').style.opacity = '0';
+    document.getElementById('preloader').style.visibility = 'hidden';
+    try {
+        if (soundEnabled) {
+            setTimeout(() => playClick(800), 100);
+            setTimeout(() => playClick(1000), 200);
         }
-        function closeAdmin() {
-            playClick(400);
-            document.getElementById('adminModal').classList.remove('active');
-        }
-        function checkAdmin() {
-            const pass = document.getElementById('adminPass').value;
-            if (pass === 'hoaan2024') { // MẬT KHẨU MẶC ĐỊNH: hoaan2024
-                playClick(1200);
-                alert('Mở khóa thành công! Bạn có thể tạo file admin.html riêng để quản lý sự kiện.');
-                closeAdmin();
-            } else {
-                playClick(200);
-                alert('Sai mật khẩu! Vui lòng thử lại.');
-            }
-        }
+    } catch(e) {}
+}
 
-        // Thêm âm thanh hover cho tất cả các nút
-        document.querySelectorAll('.btn, .card, .stat-card, .nav-link').forEach(el => {
-            el.addEventListener('mouseenter', () => playHover());
-            el.addEventListener('click', () => playClick());
+// Mô phỏng thanh loading
+let loadProgress = 0;
+const loadInterval = setInterval(() => {
+    loadProgress += Math.random() * 15;
+    if (loadProgress > 100) loadProgress = 100;
+    document.getElementById('loaderBar').style.width = loadProgress + '%';
+    if (loadProgress >= 100) clearInterval(loadInterval);
+}, 300);
+
+// ================== LOAD SỰ KIỆN TỪ FIREBASE ==================
+function loadEventsFromFirebase() {
+    const adminEventsContainer = document.getElementById('adminEvents');
+    const defaultEvent = document.getElementById('defaultEvent');
+    
+    database.ref('events').on('value', (snapshot) => {
+        const events = snapshot.val();
+        
+        if (!events) {
+            // Không có sự kiện nào, hiển thị mặc định
+            defaultEvent.style.display = 'block';
+            adminEventsContainer.style.display = 'none';
+            return;
+        }
+        
+        // Chuyển object thành array
+        const eventsArray = Object.entries(events).map(([id, event]) => ({
+            id: id,
+            ...event
+        }));
+        
+        // Lọc sự kiện tương lai (chưa diễn ra)
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        
+        const upcomingEvents = eventsArray.filter(event => {
+            const eventDate = new Date(event.date);
+            return eventDate >= today;
         });
+        
+        // Sắp xếp theo ngày gần nhất
+        upcomingEvents.sort((a, b) => new Date(a.date) - new Date(b.date));
+        
+        if (upcomingEvents.length === 0) {
+            defaultEvent.style.display = 'block';
+            adminEventsContainer.style.display = 'none';
+            return;
+        }
+        
+        // Hiển thị sự kiện từ Firebase
+        defaultEvent.style.display = 'none';
+        adminEventsContainer.style.display = 'grid';
+        adminEventsContainer.innerHTML = '';
+        
+        // Hiển thị tối đa 6 sự kiện
+        const eventsToShow = upcomingEvents.slice(0, 6);
+        
+        eventsToShow.forEach(event => {
+            const eventCard = document.createElement('div');
+            eventCard.className = 'event-card';
+            eventCard.onclick = () => playClick();
+            eventCard.onmouseenter = () => playHover();
+            
+            const eventDate = new Date(event.date);
+            const formattedDate = eventDate.toLocaleDateString('vi-VN', { 
+                day: '2-digit', 
+                month: '2-digit', 
+                year: 'numeric' 
+            });
+            
+            eventCard.innerHTML = `
+                <img src="${event.image}" alt="${event.name}" class="event-card-img" onerror="this.src='https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=2070&auto=format&fit=crop'">
+                <div class="event-card-body">
+                    <span class="event-card-date"><i class="fas fa-calendar"></i> ${formattedDate}</span>
+                    <h3>${event.name}</h3>
+                    <p><i class="fas fa-clock"></i> ${event.time} | <i class="fas fa-map-marker-alt"></i> ${event.location}</p>
+                    <p>${event.description}</p>
+                </div>
+            `;
+            
+            adminEventsContainer.appendChild(eventCard);
+        });
+    }, (error) => {
+        console.error('Lỗi khi đọc sự kiện:', error);
+        // Nếu có lỗi, hiển thị sự kiện mặc định
+        defaultEvent.style.display = 'block';
+        adminEventsContainer.style.display = 'none';
+    });
+}
 
-        console.log('🕊️ Thiếu Nhi Thánh Thể Hòa An - Website được tạo bởi AI');
-        console.log('🔑 Mật khẩu Admin mặc định: hoaan2024 (Bạn có thể đổi trong code)');
+// Load sự kiện khi trang được tải
+window.onload = function() {
+    loadEventsFromFirebase();
+    
+    // Thêm âm thanh cho các nút
+    document.querySelectorAll('.btn, .card, .stat-card, .nav-link, .event-card').forEach(el => {
+        el.addEventListener('mouseenter', () => playHover());
+        el.addEventListener('click', () => playClick());
+    });
+};
+
+console.log('🕊️ Thiếu Nhi Thánh Thể Hòa An - Website đã kết nối Firebase');
+console.log('🔑 Link Admin: admin.html | Mật khẩu: hoaan2024');
     </script>
 </body>
 </html>
