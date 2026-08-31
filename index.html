@@ -1,8 +1,5 @@
 <!DOCTYPE html>
 <html lang="vi">
-<!-- Thêm trước thẻ </head> -->
-<script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database-compat.js"></script>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
@@ -11,7 +8,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;600;800;900&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
-    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database-compat.js"></script>
     <style>
         :root {
             --gold: #D4AF37;
@@ -381,6 +380,55 @@
             margin-bottom: 10px;
         }
 
+        /* Event Cards from Firebase */
+        .events-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+        .event-card {
+            background: white;
+            border-radius: var(--iphone-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(0,0,0,0.05);
+            transition: 0.3s;
+            cursor: pointer;
+        }
+        .event-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.2);
+        }
+        .event-card-img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+        }
+        .event-card-body {
+            padding: 25px;
+        }
+        .event-card-body h3 {
+            font-weight: 800;
+            margin-bottom: 10px;
+            color: var(--black);
+        }
+        .event-card-body p {
+            color: #555;
+            margin-bottom: 5px;
+            font-size: 0.95rem;
+        }
+        .event-card-date {
+            background: var(--gold);
+            color: black;
+            font-weight: 900;
+            padding: 8px 15px;
+            border-radius: 15px;
+            display: inline-block;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+
         /* Cha */
         .cha-section {
             display: flex;
@@ -424,39 +472,6 @@
             color: var(--gold);
         }
 
-        /* Modal cho Admin */
-        .modal {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8);
-            backdrop-filter: blur(10px);
-            display: flex; align-items: center; justify-content: center;
-            z-index: 9999;
-            visibility: hidden;
-            opacity: 0;
-            transition: 0.3s;
-        }
-        .modal.active {
-            visibility: visible;
-            opacity: 1;
-        }
-        .modal-box {
-            background: white;
-            border-radius: 25px;
-            padding: 40px;
-            width: 90%;
-            max-width: 400px;
-            text-align: center;
-        }
-        .modal-box input {
-            width: 100%;
-            padding: 15px;
-            margin: 15px 0;
-            border-radius: 15px;
-            border: 1px solid #ddd;
-            font-size: 1rem;
-        }
-
         .hidden { display: none; }
 
         @media (max-width: 768px) {
@@ -466,6 +481,7 @@
     </style>
 </head>
 <body>
+
     <!-- PRELOADER -->
     <div id="preloader" onclick="enterSite()">
         <div class="loader-logo"><i class="fas fa-cross"></i></div>
@@ -572,20 +588,19 @@
             <h2>Sự Kiện Sắp Tới</h2>
             <p>Những dấu mốc quan trọng trong năm học mới.</p>
         </div>
-        <div class="event-highlight">
-            <div class="event-date">
-                6/9<br><small>Thứ Bảy</small>
-            </div>
-            <div class="event-info">
-                <h3>Khai Giảng Năm Học Mới</h3>
-                <p>Thánh lễ khai giảng và chào đón các em thiếu nhi bước vào năm học 2025 - 2026.</p>
-                <p><i class="fas fa-clock"></i> 19:30 | <i class="fas fa-map-marker-alt"></i> Nhà thờ Giáo xứ Hòa An</p>
-            </div>
-            <a href="#" class="btn btn-gold" onclick="playClick()">Đăng ký tham gia</a>
+        
+        <!-- Container cho sự kiện từ Firebase -->
+        <div id="eventsContainer"></div>
+        
+        <!-- Nút thêm sự kiện -->
+        <div style="text-align: center; margin-top: 30px;">
+            <a href="admin.html" class="btn btn-outline" style="color: black; border-color: #ddd;">
+                <i class="fas fa-plus"></i> Thêm sự kiện mới (Admin)
+            </a>
         </div>
     </div>
 
-    <!-- LIÊN HỆ (ĐỂ TRỐNG CHO BẠN TỰ ĐIỀN) -->
+    <!-- LIÊN HỆ -->
     <div class="section" id="contact">
         <div class="section-title">
             <h2>Liên Hệ</h2>
@@ -595,17 +610,17 @@
             <div class="card">
                 <i class="fas fa-phone-alt"></i>
                 <h3>Điện thoại</h3>
-                <p><!-- BẠN TỰ ĐIỀN SỐ ĐIỆN THOẠI VÀO ĐÂY -->...</p>
+                <p><!-- BẠN TỰ ĐIỀN SỐ ĐIỆN THOẠI -->...</p>
             </div>
             <div class="card">
                 <i class="fas fa-envelope"></i>
                 <h3>Email</h3>
-                <p><!-- BẠN TỰ ĐIỀN EMAIL VÀO ĐÂY -->...</p>
+                <p><!-- BẠN TỰ ĐIỀN EMAIL -->...</p>
             </div>
             <div class="card">
                 <i class="fas fa-map-marker-alt"></i>
                 <h3>Địa chỉ</h3>
-                <p><!-- BẠN TỰ ĐIỀN ĐỊA CHỈ VÀO ĐÂY -->Giáo xứ Hòa An, Giáo phận Bắc Ninh</p>
+                <p>Giáo xứ Hòa An, Giáo phận Bắc Ninh</p>
             </div>
         </div>
     </div>
@@ -616,203 +631,202 @@
         <p style="color: #aaa;">Giáo phận Bắc Ninh</p>
         <div class="footer-links">
             <a href="https://www.facebook.com/profile.php?id=100091642458006" target="_blank"><i class="fab fa-facebook"></i> Facebook</a>
-            <a href="#" onclick="openAdmin()"><i class="fas fa-lock"></i> Khu vực quản trị sự kiện</a>
+            <a href="admin.html"><i class="fas fa-lock"></i> Khu vực quản trị sự kiện</a>
         </div>
         <p style="margin-top: 20px; font-size: 0.8rem; color: #555;">© 2025 TNTT Hòa An. All rights reserved.</p>
     </footer>
 
-    <!-- MODAL MẬT KHẨU ADMIN -->
-    <div class="modal" id="adminModal">
-        <div class="modal-box">
-            <h3><i class="fas fa-lock"></i> Nhập mật khẩu Admin</h3>
-            <input type="password" id="adminPass" placeholder="Mật khẩu...">
-            <button class="btn btn-gold" onclick="checkAdmin()">Mở khóa</button>
-            <button class="btn btn-outline" style="color:black; border-color:#ddd;" onclick="closeAdmin()">Hủy</button>
-        </div>
-    </div>
-
     <script>
         // ========== FIREBASE CONFIG ==========
-const firebaseConfig = {
-    apiKey: "AIzaSyATNeLyDKlyeZgpJ0NdtmraAaOq6F8CrrA",
-    authDomain: "tntthoaan2.firebaseapp.com",
-    databaseURL: "https://tntthoaan2-default-rtdb.asia-southeast1.firebasedatabase.app",
-    projectId: "tntthoaan2",
-    storageBucket: "tntthoaan2.firebasestorage.app",
-    messagingSenderId: "643181042469",
-    appId: "1:643181042469:web:f31dd1c3be290477fc98cc"
-};
+        const firebaseConfig = {
+            apiKey: "AIzaSyATNeLyDKlyeZgpJ0NdtmraAaOq6F8CrrA",
+            authDomain: "tntthoaan2.firebaseapp.com",
+            databaseURL: "https://tntthoaan2-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "tntthoaan2",
+            storageBucket: "tntthoaan2.firebasestorage.app",
+            messagingSenderId: "643181042469",
+            appId: "1:643181042469:web:f31dd1c3be290477fc98cc"
+        };
 
-// Khởi tạo Firebase
-firebase.initializeApp(firebaseConfig);
-const database = firebase.database();
+        // Khởi tạo Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
 
-// ================== ÂM THANH ==================
-let audioCtx = null;
-let soundEnabled = true;
+        // ================== ÂM THANH ==================
+        let audioCtx = null;
+        let soundEnabled = true;
 
-function initAudio() {
-    if (!audioCtx) {
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    }
-}
-
-function playClick(freq = 800) {
-    if (!soundEnabled) return;
-    try {
-        initAudio();
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-        gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.2);
-        osc.start();
-        osc.stop(audioCtx.currentTime + 0.2);
-    } catch(e) {}
-}
-
-function playHover() {
-    if (!soundEnabled) return;
-    try {
-        initAudio();
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-        osc.type = 'triangle';
-        osc.frequency.setValueAtTime(1200, audioCtx.currentTime);
-        gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
-        osc.start();
-        osc.stop(audioCtx.currentTime + 0.1);
-    } catch(e) {}
-}
-
-function toggleSound() {
-    soundEnabled = !soundEnabled;
-    document.getElementById('soundIcon').className = soundEnabled ? 'fas fa-volume-up' : 'fas fa-volume-mute';
-    if (soundEnabled) playClick(1000);
-}
-
-// ================== PRELOADER ==================
-function enterSite() {
-    initAudio();
-    playClick(600);
-    document.getElementById('preloader').style.opacity = '0';
-    document.getElementById('preloader').style.visibility = 'hidden';
-    try {
-        if (soundEnabled) {
-            setTimeout(() => playClick(800), 100);
-            setTimeout(() => playClick(1000), 200);
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
         }
-    } catch(e) {}
-}
 
-// Mô phỏng thanh loading
-let loadProgress = 0;
-const loadInterval = setInterval(() => {
-    loadProgress += Math.random() * 15;
-    if (loadProgress > 100) loadProgress = 100;
-    document.getElementById('loaderBar').style.width = loadProgress + '%';
-    if (loadProgress >= 100) clearInterval(loadInterval);
-}, 300);
+        function playClick(freq = 800) {
+            if (!soundEnabled) return;
+            try {
+                initAudio();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.2);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.2);
+            } catch(e) {}
+        }
 
-// ================== LOAD SỰ KIỆN TỪ FIREBASE ==================
-function loadEventsFromFirebase() {
-    const adminEventsContainer = document.getElementById('adminEvents');
-    const defaultEvent = document.getElementById('defaultEvent');
-    
-    database.ref('events').on('value', (snapshot) => {
-        const events = snapshot.val();
-        
-        if (!events) {
-            // Không có sự kiện nào, hiển thị mặc định
-            defaultEvent.style.display = 'block';
-            adminEventsContainer.style.display = 'none';
-            return;
+        function playHover() {
+            if (!soundEnabled) return;
+            try {
+                initAudio();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(1200, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.1);
+            } catch(e) {}
         }
-        
-        // Chuyển object thành array
-        const eventsArray = Object.entries(events).map(([id, event]) => ({
-            id: id,
-            ...event
-        }));
-        
-        // Lọc sự kiện tương lai (chưa diễn ra)
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        
-        const upcomingEvents = eventsArray.filter(event => {
-            const eventDate = new Date(event.date);
-            return eventDate >= today;
-        });
-        
-        // Sắp xếp theo ngày gần nhất
-        upcomingEvents.sort((a, b) => new Date(a.date) - new Date(b.date));
-        
-        if (upcomingEvents.length === 0) {
-            defaultEvent.style.display = 'block';
-            adminEventsContainer.style.display = 'none';
-            return;
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            document.getElementById('soundIcon').className = soundEnabled ? 'fas fa-volume-up' : 'fas fa-volume-mute';
+            if (soundEnabled) playClick(1000);
         }
-        
-        // Hiển thị sự kiện từ Firebase
-        defaultEvent.style.display = 'none';
-        adminEventsContainer.style.display = 'grid';
-        adminEventsContainer.innerHTML = '';
-        
-        // Hiển thị tối đa 6 sự kiện
-        const eventsToShow = upcomingEvents.slice(0, 6);
-        
-        eventsToShow.forEach(event => {
-            const eventCard = document.createElement('div');
-            eventCard.className = 'event-card';
-            eventCard.onclick = () => playClick();
-            eventCard.onmouseenter = () => playHover();
+
+        // ================== PRELOADER ==================
+        function enterSite() {
+            initAudio();
+            playClick(600);
+            document.getElementById('preloader').style.opacity = '0';
+            document.getElementById('preloader').style.visibility = 'hidden';
+            try {
+                if (soundEnabled) {
+                    setTimeout(() => playClick(800), 100);
+                    setTimeout(() => playClick(1000), 200);
+                }
+            } catch(e) {}
+        }
+
+        // Mô phỏng thanh loading
+        let loadProgress = 0;
+        const loadInterval = setInterval(() => {
+            loadProgress += Math.random() * 15;
+            if (loadProgress > 100) loadProgress = 100;
+            document.getElementById('loaderBar').style.width = loadProgress + '%';
+            if (loadProgress >= 100) clearInterval(loadInterval);
+        }, 300);
+
+        // ================== LOAD SỰ KIỆN TỪ FIREBASE ==================
+        function loadEventsFromFirebase() {
+            const eventsContainer = document.getElementById('eventsContainer');
             
-            const eventDate = new Date(event.date);
-            const formattedDate = eventDate.toLocaleDateString('vi-VN', { 
-                day: '2-digit', 
-                month: '2-digit', 
-                year: 'numeric' 
+            // Hiển thị loading
+            eventsContainer.innerHTML = '<p style="text-align: center; color: #666; padding: 20px;">Đang tải sự kiện...</p>';
+            
+            // Lắng nghe sự kiện từ Firebase (real-time)
+            database.ref('events').on('value', (snapshot) => {
+                const events = snapshot.val();
+                
+                if (!events) {
+                    // Không có sự kiện, hiển thị mặc định
+                    eventsContainer.innerHTML = `
+                        <div class="event-highlight">
+                            <div class="event-date">
+                                6/9<br><small>Thứ Bảy</small>
+                            </div>
+                            <div class="event-info">
+                                <h3>Khai Giảng Năm Học Mới</h3>
+                                <p>Thánh lễ khai giảng và chào đón các em thiếu nhi bước vào năm học 2025 - 2026.</p>
+                                <p><i class="fas fa-clock"></i> 19:30 | <i class="fas fa-map-marker-alt"></i> Nhà thờ Giáo xứ Hòa An</p>
+                            </div>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                // Chuyển object thành array
+                const eventsArray = Object.entries(events).map(([id, event]) => ({
+                    id: id,
+                    ...event
+                }));
+                
+                // Lọc sự kiện tương lai (chưa diễn ra)
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                
+                const upcomingEvents = eventsArray.filter(event => {
+                    const eventDate = new Date(event.date);
+                    return eventDate >= today;
+                });
+                
+                // Sắp xếp theo ngày gần nhất
+                upcomingEvents.sort((a, b) => new Date(a.date) - new Date(b.date));
+                
+                if (upcomingEvents.length === 0) {
+                    eventsContainer.innerHTML = '<p style="text-align: center; color: #666;">Chưa có sự kiện sắp tới.</p>';
+                    return;
+                }
+                
+                // Hiển thị sự kiện
+                eventsContainer.innerHTML = '<div class="events-container"></div>';
+                const eventsGrid = eventsContainer.querySelector('.events-container');
+                
+                // Hiển thị tối đa 6 sự kiện
+                const eventsToShow = upcomingEvents.slice(0, 6);
+                
+                eventsToShow.forEach(event => {
+                    const eventCard = document.createElement('div');
+                    eventCard.className = 'event-card';
+                    eventCard.onclick = () => playClick();
+                    eventCard.onmouseenter = () => playHover();
+                    
+                    const eventDate = new Date(event.date);
+                    const formattedDate = eventDate.toLocaleDateString('vi-VN', { 
+                        day: '2-digit', 
+                        month: '2-digit', 
+                        year: 'numeric' 
+                    });
+                    
+                    eventCard.innerHTML = `
+                        <img src="${event.image}" alt="${event.name}" class="event-card-img" onerror="this.src='https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=2070&auto=format&fit=crop'">
+                        <div class="event-card-body">
+                            <span class="event-card-date"><i class="fas fa-calendar"></i> ${formattedDate}</span>
+                            <h3>${event.name}</h3>
+                            <p><i class="fas fa-clock"></i> ${event.time} | <i class="fas fa-map-marker-alt"></i> ${event.location}</p>
+                            <p>${event.description}</p>
+                        </div>
+                    `;
+                    
+                    eventsGrid.appendChild(eventCard);
+                });
+            }, (error) => {
+                console.error('Lỗi khi đọc sự kiện:', error);
+                eventsContainer.innerHTML = '<p style="text-align: center; color: red;">Lỗi khi tải sự kiện. Vui lòng thử lại sau.</p>';
             });
-            
-            eventCard.innerHTML = `
-                <img src="${event.image}" alt="${event.name}" class="event-card-img" onerror="this.src='https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=2070&auto=format&fit=crop'">
-                <div class="event-card-body">
-                    <span class="event-card-date"><i class="fas fa-calendar"></i> ${formattedDate}</span>
-                    <h3>${event.name}</h3>
-                    <p><i class="fas fa-clock"></i> ${event.time} | <i class="fas fa-map-marker-alt"></i> ${event.location}</p>
-                    <p>${event.description}</p>
-                </div>
-            `;
-            
-            adminEventsContainer.appendChild(eventCard);
-        });
-    }, (error) => {
-        console.error('Lỗi khi đọc sự kiện:', error);
-        // Nếu có lỗi, hiển thị sự kiện mặc định
-        defaultEvent.style.display = 'block';
-        adminEventsContainer.style.display = 'none';
-    });
-}
+        }
 
-// Load sự kiện khi trang được tải
-window.onload = function() {
-    loadEventsFromFirebase();
-    
-    // Thêm âm thanh cho các nút
-    document.querySelectorAll('.btn, .card, .stat-card, .nav-link, .event-card').forEach(el => {
-        el.addEventListener('mouseenter', () => playHover());
-        el.addEventListener('click', () => playClick());
-    });
-};
+        // Load sự kiện khi trang được tải
+        window.onload = function() {
+            loadEventsFromFirebase();
+            
+            // Thêm âm thanh cho các nút
+            document.querySelectorAll('.btn, .card, .stat-card, .nav-link').forEach(el => {
+                el.addEventListener('mouseenter', () => playHover());
+                el.addEventListener('click', () => playClick());
+            });
+        };
 
-console.log('🕊️ Thiếu Nhi Thánh Thể Hòa An - Website đã kết nối Firebase');
-console.log('🔑 Link Admin: admin.html | Mật khẩu: hoaan2024');
+        console.log('🕊️ Thiếu Nhi Thánh Thể Hòa An - Website đã kết nối Firebase');
+        console.log('🔑 Link Admin: admin.html | Mật khẩu: hoaan2024');
     </script>
 </body>
 </html>
