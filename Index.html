@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>TNTT Hòa An | Giáo Phận Bắc Ninh</title>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;600;800;900&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #D4AF37;
+            --gold-dark: #AA8C2C;
+            --black: #0a0a0a;
+            --white: #ffffff;
+            --gray: #f5f5f7;
+            --glass-bg: rgba(255, 255, 255, 0.7);
+            --shadow: 0 20px 40px rgba(0,0,0,0.15);
+            --iphone-radius: 24px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Be Vietnam Pro', sans-serif;
+            background-color: var(--white);
+            color: var(--black);
+            scroll-behavior: smooth;
+            -webkit-tap-highlight-color: transparent;
+            overflow-x: hidden;
+        }
+
+        /* ========== PRELOADER (LOADING + SOUND) ========== */
+        #preloader {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: radial-gradient(circle at center, #1a1a1a, #000000);
+            z-index: 99999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            cursor: pointer;
+            transition: opacity 0.6s ease, visibility 0.6s;
+        }
+        .loader-logo {
+            width: 100px; height: 100px;
+            border: 3px solid var(--gold);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2.5rem;
+            color: var(--gold);
+            animation: pulse 2s infinite;
+            margin-bottom: 20px;
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(5px);
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.7); }
+            70% { transform: scale(1.05); box-shadow: 0 0 0 20px rgba(212, 175, 55, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(212, 175, 55, 0); }
+        }
+        .loader-text {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2.5rem;
+            color: var(--gold);
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+            text-shadow: 0 0 20px rgba(212,175,55,0.5);
+        }
+        .loader-bar-bg {
+            width: 200px; height: 4px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .loader-bar {
+            height: 100%;
+            width: 0%;
+            background: var(--gold);
+            border-radius: 10px;
+            transition: width 0.3s;
+        }
+        .loader-hint {
+            margin-top: 20px;
+            color: rgba(255,255,255,0.7);
+            font-size: 0.85rem;
+            animation: blink 1.5s infinite;
+        }
+        @keyframes blink {
+            0%,100%{opacity:0.3;} 50%{opacity:1;}
+        }
+
+        /* ========== SOUND ICON (GLOBAL) ========== */
+        #sound-toggle {
+            position: fixed;
+            top: 20px; right: 20px;
+            z-index: 10000;
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.4);
+            color: white;
+            width: 45px; height: 45px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: 0.3s;
+        }
+        #sound-toggle:hover {
+            background: var(--gold);
+            color: black;
+            transform: scale(1.1);
+        }
+
+        /* ========== NAVBAR ========== */
+        .navbar {
+            position: fixed;
+            top: 0; left: 0; width: 100%;
+            padding: 15px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 9000;
+            background: rgba(255,255,255,0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            transition: 0.3s;
+        }
+        .logo {
+            font-weight: 900;
+            font-size: 1.5rem;
+            letter-spacing: -0.5px;
+        }
+        .logo span {
+            color: var(--gold-dark);
+        }
+        .nav-links {
+            display: flex;
+            gap: 25px;
+        }
+        .nav-link {
+            text-decoration: none;
+            color: var(--black);
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: 0.2s;
+            position: relative;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -5px; left: 0;
+            width: 0%; height: 2px;
+            background: var(--gold);
+            transition: 0.3s;
+        }
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        .nav-link:hover {
+            color: var(--gold-dark);
+        }
+
+        /* ========== HERO ========== */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=2070&auto=format&fit=crop') center/cover no-repeat;
+            position: relative;
+            text-align: center;
+            padding: 0 20px;
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.7), rgba(0,0,0,0.3));
+        }
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            color: white;
+            max-width: 800px;
+        }
+        .hero-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.3);
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+        }
+        .hero h1 {
+            font-size: clamp(2.5rem, 8vw, 5.5rem);
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 15px;
+            text-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .hero h1 .script {
+            font-family: 'Dancing Script', cursive;
+            color: var(--gold);
+            font-size: clamp(3rem, 10vw, 6rem);
+            display: block;
+            font-weight: 700;
+        }
+        .hero p {
+            font-size: 1.2rem;
+            font-weight: 300;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto 30px;
+        }
+        .hero-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .btn {
+            padding: 14px 28px;
+            border-radius: 50px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: 0.3s;
+            cursor: pointer;
+            border: none;
+            font-size: 0.9rem;
+            letter-spacing: 0.5px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-gold {
+            background: var(--gold);
+            color: black;
+            box-shadow: 0 10px 30px rgba(212,175,55,0.4);
+        }
+        .btn-gold:hover {
+            background: #c9a832;
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(212,175,55,0.6);
+        }
+        .btn-outline {
+            background: transparent;
+            color: white;
+            border: 2px solid rgba(255,255,255,0.8);
+        }
+        .btn-outline:hover {
+            background: white;
+            color: black;
+        }
+
+        /* ========== SECTIONS ========== */
+        .section {
+            padding: 80px 5%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .section-title {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        .section-title h2 {
+            font-size: 2.5rem;
+            font-weight: 900;
+        }
+        .section-title p {
+            color: #666;
+            margin-top: 10px;
+        }
+
+        /* Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 25px;
+            margin-top: -40px;
+            position: relative;
+            z-index: 5;
+        }
+        .stat-card {
+            background: var(--white);
+            border-radius: var(--iphone-radius);
+            padding: 25px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(0,0,0,0.05);
+            transition: 0.3s;
+            cursor: pointer;
+        }
+        .stat-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+        }
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--gold-dark);
+        }
+        .stat-label {
+            font-weight: 600;
+            color: #333;
+            margin-top: 5px;
+        }
+
+        /* Cards */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+        .card {
+            background: var(--white);
+            border-radius: var(--iphone-radius);
+            padding: 30px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(0,0,0,0.05);
+            transition: 0.3s;
+            cursor: pointer;
+            text-align: center;
+        }
+        .card i {
+            font-size: 3rem;
+            color: var(--gold-dark);
+            margin-bottom: 20px;
+        }
+        .card h3 {
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+        .card p {
+            color: #555;
+            font-size: 0.95rem;
+        }
+
+        /* Events */
+        .event-highlight {
+            background: linear-gradient(135deg, #1a1a1a, #000);
+            color: white;
+            border-radius: var(--iphone-radius);
+            padding: 40px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            margin: 40px 0;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.3);
+        }
+        .event-date {
+            background: var(--gold);
+            color: black;
+            font-weight: 900;
+            padding: 15px 25px;
+            border-radius: 20px;
+            text-align: center;
+            font-size: 1.5rem;
+        }
+        .event-info h3 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+
+        /* Cha */
+        .cha-section {
+            display: flex;
+            align-items: center;
+            gap: 40px;
+            flex-wrap: wrap;
+            background: var(--gray);
+            border-radius: var(--iphone-radius);
+            padding: 40px;
+        }
+        .cha-avatar {
+            width: 150px; height: 150px;
+            background: var(--gold);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 4rem;
+            color: white;
+            box-shadow: 0 20px 40px rgba(212,175,55,0.4);
+        }
+
+        /* Footer */
+        footer {
+            background: #000;
+            color: white;
+            padding: 40px 5%;
+            text-align: center;
+            margin-top: 50px;
+        }
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            margin: 20px 0;
+        }
+        .footer-links a {
+            color: #aaa;
+            text-decoration: none;
+            transition: 0.2s;
+        }
+        .footer-links a:hover {
+            color: var(--gold);
+        }
+
+        /* Modal cho Admin */
+        .modal {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(10px);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 9999;
+            visibility: hidden;
+            opacity: 0;
+            transition: 0.3s;
+        }
+        .modal.active {
+            visibility: visible;
+            opacity: 1;
+        }
+        .modal-box {
+            background: white;
+            border-radius: 25px;
+            padding: 40px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+        }
+        .modal-box input {
+            width: 100%;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 15px;
+            border: 1px solid #ddd;
+            font-size: 1rem;
+        }
+
+        .hidden { display: none; }
+
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .hero h1 { font-size: 3rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- PRELOADER -->
+    <div id="preloader" onclick="enterSite()">
+        <div class="loader-logo"><i class="fas fa-cross"></i></div>
+        <div class="loader-text">Thiếu Nhi Hòa An</div>
+        <div class="loader-bar-bg"><div class="loader-bar" id="loaderBar"></div></div>
+        <div class="loader-hint">👆 BẤM VÀO ĐÂY ĐỂ BẬT ÂM THANH & VÀO TRANG</div>
+    </div>
+
+    <!-- NÚT BẬT/TẮT ÂM THANH -->
+    <div id="sound-toggle" onclick="toggleSound()">
+        <i class="fas fa-volume-up" id="soundIcon"></i>
+    </div>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <div class="logo">TNTT <span>HÒA AN</span></div>
+        <div class="nav-links">
+            <a href="#" class="nav-link">Trang chủ</a>
+            <a href="#about" class="nav-link">Giới thiệu</a>
+            <a href="#activities" class="nav-link">Hoạt động</a>
+            <a href="#events" class="nav-link">Sự kiện</a>
+            <a href="#contact" class="nav-link">Liên hệ</a>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <header class="hero">
+        <div class="hero-content">
+            <div class="hero-badge"><i class="fas fa-church"></i> GIÁO XỨ HÒA AN - GIÁO PHẬN BẮC NINH</div>
+            <h1>
+                THIẾU NHI
+                <span class="script">Thánh Thể</span>
+            </h1>
+            <p>Nơi ươm mầm đức tin, giúp các em thiếu nhi đến gần Chúa Giêsu Thánh Thể qua học tập, vui chơi và phục vụ.</p>
+            <div class="hero-buttons">
+                <a href="https://www.facebook.com/profile.php?id=100091642458006" target="_blank" class="btn btn-gold"><i class="fab fa-facebook-f"></i> Theo dõi Facebook</a>
+                <a href="#about" class="btn btn-outline">Khám phá <i class="fas fa-arrow-down"></i></a>
+            </div>
+        </div>
+    </header>
+
+    <!-- STATS -->
+    <div class="section" style="margin-top: -30px;">
+        <div class="stats-grid">
+            <div class="stat-card" onclick="playClick()">
+                <div class="stat-number">2012</div>
+                <div class="stat-label">Năm thành lập</div>
+            </div>
+            <div class="stat-card" onclick="playClick()">
+                <div class="stat-number">67</div>
+                <div class="stat-label">Thành viên hiện tại</div>
+            </div>
+            <div class="stat-card" onclick="playClick()">
+                <div class="stat-number"><i class="fas fa-cross"></i></div>
+                <div class="stat-label">Hướng về Thánh Thể</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- GIỚI THIỆU -->
+    <div class="section" id="about">
+        <div class="section-title">
+            <h2>Về Chúng Tôi</h2>
+            <p>Được thành lập năm 2012, với 67 thành viên, mục đích giúp trẻ đến với Chúa Kitô.</p>
+        </div>
+        <div class="cha-section">
+            <div class="cha-avatar"><i class="fas fa-user-tie"></i></div>
+            <div>
+                <h3 style="color: var(--gold-dark);">Cha Lê Quang Vinh</h3>
+                <p style="font-weight: 600;">Linh hướng Thiếu Nhi Thánh Thể</p>
+                <p style="color: #555; margin-top: 10px;">Đồng hành và hướng dẫn các em trên con đường đức tin, giúp các em trở thành những người con ngoan của Chúa và Giáo hội.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- HOẠT ĐỘNG -->
+    <div class="section" id="activities">
+        <div class="section-title">
+            <h2>Hoạt Động Chính</h2>
+            <p>Những sinh hoạt giúp các em phát triển toàn diện về đức tin và đời sống.</p>
+        </div>
+        <div class="cards-grid">
+            <div class="card" onclick="playClick()">
+                <i class="fas fa-church"></i>
+                <h3>Tập Thánh Lễ</h3>
+                <p>Giúp các em tham gia phụng vụ một cách sốt sắng và hiểu biết hơn về Thánh lễ.</p>
+            </div>
+            <div class="card" onclick="playClick()">
+                <i class="fas fa-hands-helping"></i>
+                <h3>Hoạt động Xã hội</h3>
+                <p>Tham gia các công việc bác ái, giúp đỡ cộng đồng, thăm viếng người già neo đơn.</p>
+            </div>
+            <div class="card" onclick="playClick()">
+                <i class="fas fa-book-open"></i>
+                <h3>Học Giáo Lý</h3>
+                <p>Đào tạo kiến thức giáo lý căn bản và nâng cao, chuẩn bị cho các bí tích.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- SỰ KIỆN SẮP TỚI -->
+    <div class="section" id="events">
+        <div class="section-title">
+            <h2>Sự Kiện Sắp Tới</h2>
+            <p>Những dấu mốc quan trọng trong năm học mới.</p>
+        </div>
+        <div class="event-highlight">
+            <div class="event-date">
+                6/9<br><small>Thứ Bảy</small>
+            </div>
+            <div class="event-info">
+                <h3>Khai Giảng Năm Học Mới</h3>
+                <p>Thánh lễ khai giảng và chào đón các em thiếu nhi bước vào năm học 2025 - 2026.</p>
+                <p><i class="fas fa-clock"></i> 19:30 | <i class="fas fa-map-marker-alt"></i> Nhà thờ Giáo xứ Hòa An</p>
+            </div>
+            <a href="#" class="btn btn-gold" onclick="playClick()">Đăng ký tham gia</a>
+        </div>
+    </div>
+
+    <!-- LIÊN HỆ (ĐỂ TRỐNG CHO BẠN TỰ ĐIỀN) -->
+    <div class="section" id="contact">
+        <div class="section-title">
+            <h2>Liên Hệ</h2>
+            <p>Mọi thông tin xin vui lòng liên lạc với Ban Điều Hành.</p>
+        </div>
+        <div class="cards-grid" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));">
+            <div class="card">
+                <i class="fas fa-phone-alt"></i>
+                <h3>Điện thoại</h3>
+                <p><!-- BẠN TỰ ĐIỀN SỐ ĐIỆN THOẠI VÀO ĐÂY -->...</p>
+            </div>
+            <div class="card">
+                <i class="fas fa-envelope"></i>
+                <h3>Email</h3>
+                <p><!-- BẠN TỰ ĐIỀN EMAIL VÀO ĐÂY -->...</p>
+            </div>
+            <div class="card">
+                <i class="fas fa-map-marker-alt"></i>
+                <h3>Địa chỉ</h3>
+                <p><!-- BẠN TỰ ĐIỀN ĐỊA CHỈ VÀO ĐÂY -->Giáo xứ Hòa An, Giáo phận Bắc Ninh</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        <p style="font-weight: 800; font-size: 1.2rem;">Thiếu Nhi Thánh Thể Giáo Xứ Hòa An</p>
+        <p style="color: #aaa;">Giáo phận Bắc Ninh</p>
+        <div class="footer-links">
+            <a href="https://www.facebook.com/profile.php?id=100091642458006" target="_blank"><i class="fab fa-facebook"></i> Facebook</a>
+            <a href="#" onclick="openAdmin()"><i class="fas fa-lock"></i> Khu vực quản trị sự kiện</a>
+        </div>
+        <p style="margin-top: 20px; font-size: 0.8rem; color: #555;">© 2025 TNTT Hòa An. All rights reserved.</p>
+    </footer>
+
+    <!-- MODAL MẬT KHẨU ADMIN -->
+    <div class="modal" id="adminModal">
+        <div class="modal-box">
+            <h3><i class="fas fa-lock"></i> Nhập mật khẩu Admin</h3>
+            <input type="password" id="adminPass" placeholder="Mật khẩu...">
+            <button class="btn btn-gold" onclick="checkAdmin()">Mở khóa</button>
+            <button class="btn btn-outline" style="color:black; border-color:#ddd;" onclick="closeAdmin()">Hủy</button>
+        </div>
+    </div>
+
+    <script>
+        // ================== ÂM THANH ==================
+        let audioCtx = null;
+        let soundEnabled = true;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        function playClick(freq = 800) {
+            if (!soundEnabled) return;
+            try {
+                initAudio();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.2);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.2);
+            } catch(e) {}
+        }
+
+        function playHover() {
+            if (!soundEnabled) return;
+            try {
+                initAudio();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(1200, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.1);
+            } catch(e) {}
+        }
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            document.getElementById('soundIcon').className = soundEnabled ? 'fas fa-volume-up' : 'fas fa-volume-mute';
+            if (soundEnabled) playClick(1000);
+        }
+
+        // ================== PRELOADER ==================
+        function enterSite() {
+            initAudio();
+            playClick(600);
+            document.getElementById('preloader').style.opacity = '0';
+            document.getElementById('preloader').style.visibility = 'hidden';
+            // Thử tự phát âm thanh chào mừng
+            try {
+                if (soundEnabled) {
+                    setTimeout(() => playClick(800), 100);
+                    setTimeout(() => playClick(1000), 200);
+                }
+            } catch(e) {}
+        }
+
+        // Mô phỏng thanh loading
+        let loadProgress = 0;
+        const loadInterval = setInterval(() => {
+            loadProgress += Math.random() * 15;
+            if (loadProgress > 100) loadProgress = 100;
+            document.getElementById('loaderBar').style.width = loadProgress + '%';
+            if (loadProgress >= 100) clearInterval(loadInterval);
+        }, 300);
+
+        // ================== ADMIN MODAL ==================
+        function openAdmin() {
+            playClick();
+            document.getElementById('adminModal').classList.add('active');
+        }
+        function closeAdmin() {
+            playClick(400);
+            document.getElementById('adminModal').classList.remove('active');
+        }
+        function checkAdmin() {
+            const pass = document.getElementById('adminPass').value;
+            if (pass === 'hoaan2024') { // MẬT KHẨU MẶC ĐỊNH: hoaan2024
+                playClick(1200);
+                alert('Mở khóa thành công! Bạn có thể tạo file admin.html riêng để quản lý sự kiện.');
+                closeAdmin();
+            } else {
+                playClick(200);
+                alert('Sai mật khẩu! Vui lòng thử lại.');
+            }
+        }
+
+        // Thêm âm thanh hover cho tất cả các nút
+        document.querySelectorAll('.btn, .card, .stat-card, .nav-link').forEach(el => {
+            el.addEventListener('mouseenter', () => playHover());
+            el.addEventListener('click', () => playClick());
+        });
+
+        console.log('🕊️ Thiếu Nhi Thánh Thể Hòa An - Website được tạo bởi AI');
+        console.log('🔑 Mật khẩu Admin mặc định: hoaan2024 (Bạn có thể đổi trong code)');
+    </script>
+</body>
+</html>

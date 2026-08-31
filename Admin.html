@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản trị sự kiện | TNTT Hòa An</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #0a0a0a;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background: #111;
+            border: 1px solid #333;
+            border-radius: 30px;
+            padding: 50px;
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.6);
+        }
+        h2 { color: #D4AF37; margin-bottom: 30px; }
+        input, textarea {
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 15px;
+            border: 1px solid #444;
+            background: #1a1a1a;
+            color: white;
+            font-size: 1rem;
+        }
+        button {
+            background: #D4AF37;
+            color: black;
+            font-weight: bold;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1rem;
+            margin-top: 20px;
+        }
+        button:hover { background: #c9a832; }
+        #status { margin-top: 20px; color: #aaa; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>🔐 Nhập mật khẩu</h2>
+        <input type="password" id="password" placeholder="Mật khẩu quản trị...">
+        <button onclick="login()">Mở khóa</button>
+        <p id="status"></p>
+    </div>
+
+    <script>
+        const ADMIN_PASS = "hoaan2024"; // ĐỔI MẬT KHẨU TẠI ĐÂY
+
+        function login() {
+            const pass = document.getElementById('password').value;
+            if (pass === ADMIN_PASS) {
+                document.getElementById('status').innerHTML = "Đăng nhập thành công! (Bạn có thể thêm form nhập sự kiện ở đây)";
+                alert("Thành công! Bây giờ bạn có thể code thêm form nhập sự kiện vào đây.");
+                // Ở đây bạn có thể thêm code để hiển thị form nhập sự kiện
+            } else {
+                document.getElementById('status').innerHTML = "Sai mật khẩu!";
+                alert("Sai mật khẩu!");
+            }
+        }
+    </script>
+</body>
+</html>
