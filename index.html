@@ -4,23 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <title>TNTT Hòa An | Giáo Phận Bắc Ninh</title>
-    <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;600;800;900&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
-    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database-compat.js"></script>
     <style>
         :root {
-            --gold: #D4AF37;
-            --gold-dark: #AA8C2C;
-            --black: #0a0a0a;
-            --white: #ffffff;
-            --gray: #f5f5f7;
-            --glass-bg: rgba(255, 255, 255, 0.7);
-            --shadow: 0 20px 40px rgba(0,0,0,0.15);
-            --iphone-radius: 24px;
+            --primary: #FF6B6B;
+            --secondary: #4ECDC4;
+            --accent: #FFE66D;
+            --dark: #2C3E50;
+            --glass-bg: rgba(255, 255, 255, 0.12);
+            --glass-border: rgba(255, 255, 255, 0.25);
+            --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.25);
+            --glass-blur: blur(15px);
+            --radius-sm: 20px;
+            --radius-md: 30px;
+            --radius-lg: 40px;
+            --transition: 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
 
         * {
@@ -31,19 +32,78 @@
 
         body {
             font-family: 'Be Vietnam Pro', sans-serif;
-            background-color: var(--white);
-            color: var(--black);
+            background: linear-gradient(135deg, #FF6B6B 0%, #4ECDC4 50%, #FFE66D 100%);
+            color: var(--dark);
             scroll-behavior: smooth;
             -webkit-tap-highlight-color: transparent;
             overflow-x: hidden;
+            line-height: 1.6;
+            min-height: 100vh;
+            position: relative;
+            opacity: 0;
+            animation: bodyFadeIn 1s ease forwards;
         }
 
-        /* ========== PRELOADER (LOADING + SOUND) ========== */
+        @keyframes bodyFadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(255, 107, 107, 0.4) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(78, 205, 196, 0.4) 0%, transparent 50%),
+                radial-gradient(circle at 50% 80%, rgba(255, 230, 109, 0.4) 0%, transparent 50%);
+            z-index: -2;
+            animation: gradientShift 10s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30px, -30px) scale(1.1); }
+            66% { transform: translate(-20px, 20px) scale(0.9); }
+        }
+
+        #scrollProgress {
+            position: fixed;
+            top: 0; left: 0;
+            width: 0%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent), var(--primary), var(--secondary));
+            z-index: 10001;
+            transition: width 0.1s;
+            box-shadow: 0 0 20px rgba(255, 230, 109, 0.5);
+        }
+
+        .bubble {
+            position: fixed;
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--glass-border);
+            border-radius: 50%;
+            animation: floatBubble 15s infinite;
+            z-index: -1;
+            box-shadow: var(--glass-shadow);
+        }
+
+        @keyframes floatBubble {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            25% { transform: translateY(-100px) rotate(90deg); }
+            50% { transform: translateY(-50px) rotate(180deg); }
+            75% { transform: translateY(-150px) rotate(270deg); }
+        }
+
         #preloader {
             position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
-            background: radial-gradient(circle at center, #1a1a1a, #000000);
+            background: linear-gradient(135deg, #2C3E50, #1A1A2E);
             z-index: 99999;
             display: flex;
             flex-direction: column;
@@ -51,225 +111,377 @@
             justify-content: center;
             color: white;
             cursor: pointer;
-            transition: opacity 0.6s ease, visibility 0.6s;
+            transition: opacity 0.8s ease, visibility 0.8s;
+        }
+        #preloader.hidden {
+            opacity: 0;
+            visibility: hidden;
         }
         .loader-logo {
-            width: 100px; height: 100px;
-            border: 3px solid var(--gold);
+            width: 130px;
+            height: 130px;
+            border: 3px solid var(--accent);
             border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 2.5rem;
-            color: var(--gold);
-            animation: pulse 2s infinite;
-            margin-bottom: 20px;
-            background: rgba(255,255,255,0.05);
-            backdrop-filter: blur(5px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3.5rem;
+            color: var(--accent);
+            animation: pulse 1.5s infinite;
+            margin-bottom: 25px;
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            box-shadow: 0 0 50px rgba(255, 230, 109, 0.5);
+            position: relative;
+        }
+        .loader-logo::before {
+            content: '';
+            position: absolute;
+            inset: -10px;
+            border: 2px solid rgba(255, 230, 109, 0.3);
+            border-radius: 50%;
+            animation: spin 3s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
         @keyframes pulse {
-            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.7); }
-            70% { transform: scale(1.05); box-shadow: 0 0 0 20px rgba(212, 175, 55, 0); }
-            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(212, 175, 55, 0); }
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 230, 109, 0.7); }
+            70% { transform: scale(1.05); box-shadow: 0 0 0 25px rgba(255, 230, 109, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 230, 109, 0); }
         }
         .loader-text {
             font-family: 'Dancing Script', cursive;
-            font-size: 2.5rem;
-            color: var(--gold);
+            font-size: 3rem;
+            color: var(--accent);
             letter-spacing: 2px;
             margin-bottom: 15px;
-            text-shadow: 0 0 20px rgba(212,175,55,0.5);
+            text-shadow: 0 0 30px rgba(255, 230, 109, 0.6);
         }
         .loader-bar-bg {
-            width: 200px; height: 4px;
-            background: rgba(255,255,255,0.2);
+            width: 280px;
+            height: 4px;
+            background: rgba(255,255,255,0.15);
             border-radius: 10px;
             overflow: hidden;
+            margin-bottom: 15px;
         }
         .loader-bar {
             height: 100%;
             width: 0%;
-            background: var(--gold);
+            background: linear-gradient(90deg, var(--accent), var(--primary), var(--secondary));
             border-radius: 10px;
             transition: width 0.3s;
+            box-shadow: 0 0 20px rgba(255, 230, 109, 0.5);
+        }
+        .loader-percentage {
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: var(--accent);
+            margin-bottom: 15px;
         }
         .loader-hint {
-            margin-top: 20px;
             color: rgba(255,255,255,0.7);
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             animation: blink 1.5s infinite;
         }
         @keyframes blink {
             0%,100%{opacity:0.3;} 50%{opacity:1;}
         }
 
-        /* ========== SOUND ICON (GLOBAL) ========== */
         #sound-toggle {
             position: fixed;
-            top: 20px; right: 20px;
+            bottom: 30px;
+            right: 30px;
             z-index: 10000;
-            background: rgba(255,255,255,0.2);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.4);
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--glass-border);
             color: white;
-            width: 45px; height: 45px;
+            width: 60px;
+            height: 60px;
             border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             cursor: pointer;
-            font-size: 1.2rem;
-            transition: 0.3s;
+            font-size: 1.5rem;
+            transition: var(--transition);
+            box-shadow: var(--glass-shadow);
         }
         #sound-toggle:hover {
-            background: var(--gold);
-            color: black;
-            transform: scale(1.1);
+            transform: scale(1.1) rotate(10deg);
+            background: rgba(255, 255, 255, 0.3);
         }
 
-        /* ========== NAVBAR ========== */
         .navbar {
             position: fixed;
-            top: 0; left: 0; width: 100%;
-            padding: 15px 5%;
+            top: 20px; left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 1200px;
+            padding: 15px 30px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             z-index: 9000;
-            background: rgba(255,255,255,0.8);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(0,0,0,0.05);
-            transition: 0.3s;
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--glass-border);
+            border-radius: 50px;
+            box-shadow: var(--glass-shadow);
+            transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            --mouse-x: 50%;
+            --mouse-y: 50%;
+            position: relative;
+        }
+        .navbar::after {
+            content: '';
+            position: absolute;
+            top: var(--mouse-y);
+            left: var(--mouse-x);
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, rgba(255, 230, 109, 0.3), transparent);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            opacity: 0;
+            z-index: 0;
+        }
+        .navbar:hover::after {
+            opacity: 1;
+        }
+        .navbar::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -100%;
+            width: 50%;
+            height: 200%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+            pointer-events: none;
+        }
+        .navbar:hover::before {
+            left: 150%;
+        }
+        .navbar.scrolled {
+            padding: 12px 25px;
+            background: rgba(255, 255, 255, 0.2);
+        }
+        .nav-indicator {
+            position: absolute;
+            bottom: 8px;
+            left: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent), var(--primary), var(--secondary));
+            border-radius: 10px;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            box-shadow: 0 0 15px rgba(255, 230, 109, 0.6);
+            pointer-events: none;
+            z-index: 1;
+            width: 0;
+        }
+        .navbar-scroll-progress {
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent), var(--primary));
+            border-radius: 0 0 50px 50px;
+            transition: width 0.1s;
+            width: 0%;
+            z-index: 1;
         }
         .logo {
             font-weight: 900;
             font-size: 1.5rem;
             letter-spacing: -0.5px;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            z-index: 2;
         }
         .logo span {
-            color: var(--gold-dark);
+            color: var(--accent);
         }
         .nav-links {
             display: flex;
-            gap: 25px;
+            gap: 20px;
+            z-index: 2;
         }
         .nav-link {
             text-decoration: none;
-            color: var(--black);
+            color: white;
             font-weight: 600;
             font-size: 0.9rem;
-            transition: 0.2s;
+            transition: all 0.3s ease;
             position: relative;
+            padding: 10px 18px;
+            border-radius: 25px;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            cursor: pointer;
+            z-index: 2;
         }
-        .nav-link::after {
+        .nav-link::before {
             content: '';
             position: absolute;
-            bottom: -5px; left: 0;
-            width: 0%; height: 2px;
-            background: var(--gold);
-            transition: 0.3s;
+            inset: 0;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 25px;
+            transform: scale(0);
+            transition: transform 0.3s ease;
+            z-index: -1;
         }
-        .nav-link:hover::after {
-            width: 100%;
+        .nav-link:hover::before {
+            transform: scale(1);
         }
-        .nav-link:hover {
-            color: var(--gold-dark);
+        .nav-link.active {
+            background: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 0 20px rgba(255, 230, 109, 0.4);
+            color: var(--accent);
+        }
+        .nav-link i {
+            margin-right: 5px;
+            transition: transform 0.3s ease;
+        }
+        .nav-link:hover i {
+            transform: rotate(360deg) scale(1.2);
+        }
+        .nav-link span {
+            position: relative;
+            display: inline-block;
+            transition: transform 0.3s ease;
+        }
+        .nav-link:hover span {
+            transform: translateY(-2px);
         }
 
-        /* ========== HERO ========== */
         .hero {
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=2070&auto=format&fit=crop') center/cover no-repeat;
             position: relative;
             text-align: center;
-            padding: 0 20px;
-        }
-        .hero::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.7), rgba(0,0,0,0.3));
+            padding: 120px 20px 50px;
         }
         .hero-content {
-            position: relative;
-            z-index: 2;
-            color: white;
-            max-width: 800px;
+            max-width: 900px;
+            animation: fadeInUp 1s ease;
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         .hero-badge {
             display: inline-block;
-            background: rgba(255,255,255,0.2);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.3);
-            padding: 10px 20px;
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--glass-border);
+            padding: 12px 25px;
             border-radius: 50px;
             font-weight: 600;
             letter-spacing: 2px;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             font-size: 0.9rem;
+            color: white;
+            box-shadow: var(--glass-shadow);
+            animation: fadeInUp 1s ease 0.2s backwards;
         }
         .hero h1 {
-            font-size: clamp(2.5rem, 8vw, 5.5rem);
+            font-size: clamp(3rem, 10vw, 6rem);
             font-weight: 900;
-            line-height: 1.1;
-            margin-bottom: 15px;
-            text-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            line-height: 1.05;
+            margin-bottom: 20px;
+            color: white;
+            text-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            animation: fadeInUp 1s ease 0.4s backwards;
         }
         .hero h1 .script {
             font-family: 'Dancing Script', cursive;
-            color: var(--gold);
-            font-size: clamp(3rem, 10vw, 6rem);
+            color: var(--accent);
+            font-size: clamp(3.5rem, 12vw, 7rem);
             display: block;
             font-weight: 700;
+            text-shadow: 0 0 40px rgba(255, 230, 109, 0.5);
         }
         .hero p {
             font-size: 1.2rem;
             font-weight: 300;
-            opacity: 0.9;
-            max-width: 600px;
-            margin: 0 auto 30px;
+            color: white;
+            max-width: 650px;
+            margin: 0 auto 35px;
+            line-height: 1.8;
+            animation: fadeInUp 1s ease 0.6s backwards;
         }
         .hero-buttons {
             display: flex;
-            gap: 15px;
+            gap: 20px;
             justify-content: center;
             flex-wrap: wrap;
+            animation: fadeInUp 1s ease 0.8s backwards;
         }
         .btn {
-            padding: 14px 28px;
+            padding: 16px 35px;
             border-radius: 50px;
             font-weight: 700;
             text-decoration: none;
-            transition: 0.3s;
+            transition: var(--transition);
             cursor: pointer;
             border: none;
-            font-size: 0.9rem;
+            font-size: 1rem;
             letter-spacing: 0.5px;
             display: inline-flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
+            position: relative;
+            overflow: hidden;
         }
-        .btn-gold {
-            background: var(--gold);
-            color: black;
-            box-shadow: 0 10px 30px rgba(212,175,55,0.4);
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
         }
-        .btn-gold:hover {
-            background: #c9a832;
-            transform: translateY(-3px);
-            box-shadow: 0 15px 40px rgba(212,175,55,0.6);
+        .btn:hover::after {
+            width: 300px;
+            height: 300px;
         }
-        .btn-outline {
-            background: transparent;
+        .btn-accent {
+            background: linear-gradient(135deg, var(--accent), #FFD700);
+            color: var(--dark);
+            box-shadow: 0 15px 35px rgba(255, 230, 109, 0.4);
+        }
+        .btn-accent:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 25px 50px rgba(255, 230, 109, 0.6);
+        }
+        .btn-glass {
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--glass-border);
             color: white;
-            border: 2px solid rgba(255,255,255,0.8);
+            box-shadow: var(--glass-shadow);
         }
-        .btn-outline:hover {
-            background: white;
-            color: black;
+        .btn-glass:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px);
         }
 
-        /* ========== SECTIONS ========== */
         .section {
             padding: 80px 5%;
             max-width: 1200px;
@@ -280,147 +492,136 @@
             margin-bottom: 50px;
         }
         .section-title h2 {
-            font-size: 2.5rem;
+            font-size: clamp(2rem, 5vw, 3rem);
             font-weight: 900;
+            color: white;
+            margin-bottom: 15px;
+            text-shadow: 0 5px 20px rgba(0,0,0,0.3);
         }
         .section-title p {
-            color: #666;
-            margin-top: 10px;
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 1.1rem;
         }
 
-        /* Stats */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 25px;
-            margin-top: -40px;
-            position: relative;
-            z-index: 5;
-        }
-        .stat-card {
-            background: var(--white);
-            border-radius: var(--iphone-radius);
-            padding: 25px;
-            text-align: center;
-            box-shadow: var(--shadow);
-            border: 1px solid rgba(0,0,0,0.05);
-            transition: 0.3s;
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-md);
+            padding: 40px;
+            box-shadow: var(--glass-shadow);
+            transition: var(--transition);
             cursor: pointer;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
         }
-        .stat-card:hover {
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.15), transparent);
+            opacity: 0;
+            transition: var(--transition);
+            transform: scale(0);
+        }
+        .glass-card:hover::before {
+            opacity: 1;
+            transform: scale(1);
+        }
+        .glass-card:hover {
             transform: translateY(-10px);
-            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+            background: rgba(255, 255, 255, 0.25);
+        }
+        .glass-card i {
+            font-size: 3.5rem;
+            color: var(--accent);
+            margin-bottom: 20px;
+            transition: var(--transition);
+        }
+        .glass-card:hover i {
+            transform: scale(1.2) rotate(10deg);
+        }
+        .glass-card h3 {
+            font-weight: 800;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+            color: white;
+        }
+        .glass-card p {
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+        .stats-grid, .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
         }
         .stat-number {
             font-size: 3rem;
             font-weight: 900;
-            color: var(--gold-dark);
+            color: var(--accent);
+            text-shadow: 0 0 20px rgba(255, 230, 109, 0.5);
         }
         .stat-label {
             font-weight: 600;
-            color: #333;
-            margin-top: 5px;
-        }
-
-        /* Cards */
-        .cards-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 30px;
-        }
-        .card {
-            background: var(--white);
-            border-radius: var(--iphone-radius);
-            padding: 30px;
-            box-shadow: var(--shadow);
-            border: 1px solid rgba(0,0,0,0.05);
-            transition: 0.3s;
-            cursor: pointer;
-            text-align: center;
-        }
-        .card i {
-            font-size: 3rem;
-            color: var(--gold-dark);
-            margin-bottom: 20px;
-        }
-        .card h3 {
-            font-weight: 800;
-            margin-bottom: 10px;
-        }
-        .card p {
-            color: #555;
-            font-size: 0.95rem;
-        }
-
-        /* Events */
-        .event-highlight {
-            background: linear-gradient(135deg, #1a1a1a, #000);
             color: white;
-            border-radius: var(--iphone-radius);
-            padding: 40px;
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            justify-content: space-between;
-            gap: 20px;
-            margin: 40px 0;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.3);
-        }
-        .event-date {
-            background: var(--gold);
-            color: black;
-            font-weight: 900;
-            padding: 15px 25px;
-            border-radius: 20px;
-            text-align: center;
-            font-size: 1.5rem;
-        }
-        .event-info h3 {
-            font-size: 1.8rem;
-            margin-bottom: 10px;
+            margin-top: 10px;
         }
 
-        /* Event Cards from Firebase */
-        .events-container {
+        .events-container, .news-container {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 30px;
+            gap: 25px;
             margin-top: 30px;
         }
-        .event-card {
-            background: white;
-            border-radius: var(--iphone-radius);
+        .event-card, .news-card {
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-md);
             overflow: hidden;
-            box-shadow: var(--shadow);
-            border: 1px solid rgba(0,0,0,0.05);
-            transition: 0.3s;
+            box-shadow: var(--glass-shadow);
+            transition: var(--transition);
             cursor: pointer;
         }
-        .event-card:hover {
+        .event-card:hover, .news-card:hover {
             transform: translateY(-10px);
-            box-shadow: 0 30px 60px rgba(0,0,0,0.2);
+            background: rgba(255, 255, 255, 0.25);
         }
         .event-card-img {
             width: 100%;
             height: 250px;
             object-fit: cover;
+            transition: var(--transition);
         }
-        .event-card-body {
+        .event-card:hover .event-card-img {
+            transform: scale(1.1);
+        }
+        .event-card-body, .news-card-body {
             padding: 25px;
         }
-        .event-card-body h3 {
+        .event-card-body h3, .news-card-body h3 {
             font-weight: 800;
             margin-bottom: 10px;
-            color: var(--black);
+            color: white;
+            font-size: 1.2rem;
         }
-        .event-card-body p {
-            color: #555;
+        .event-card-body p, .news-card-body p {
+            color: rgba(255, 255, 255, 0.85);
             margin-bottom: 5px;
             font-size: 0.95rem;
         }
         .event-card-date {
-            background: var(--gold);
-            color: black;
+            background: linear-gradient(135deg, var(--accent), #FFD700);
+            color: var(--dark);
             font-weight: 900;
             padding: 8px 15px;
             border-radius: 15px;
@@ -428,30 +629,92 @@
             margin-bottom: 10px;
             font-size: 0.9rem;
         }
+        .news-card-icon {
+            width: 100%;
+            height: 220px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4.5rem;
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            color: white;
+        }
+        .news-card-icon.video {
+            background: rgba(255, 107, 107, 0.3);
+        }
+        .news-card-link {
+            display: inline-block;
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--glass-border);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+        .news-card-link:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+        .news-type-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .news-type-badge.post {
+            background: rgba(78, 205, 196, 0.3);
+            color: white;
+        }
+        .news-type-badge.video {
+            background: rgba(255, 107, 107, 0.3);
+            color: white;
+        }
 
-        /* Cha */
         .cha-section {
             display: flex;
             align-items: center;
             gap: 40px;
             flex-wrap: wrap;
-            background: var(--gray);
-            border-radius: var(--iphone-radius);
-            padding: 40px;
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-lg);
+            padding: 50px;
+            box-shadow: var(--glass-shadow);
         }
         .cha-avatar {
-            width: 150px; height: 150px;
-            background: var(--gold);
+            width: 180px;
+            height: 180px;
+            background: linear-gradient(135deg, var(--accent), #FFD700);
             border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 4rem;
-            color: white;
-            box-shadow: 0 20px 40px rgba(212,175,55,0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 5rem;
+            color: var(--dark);
+            box-shadow: var(--glass-shadow);
+            position: relative;
+        }
+        .cha-avatar::after {
+            content: '';
+            position: absolute;
+            inset: -5px;
+            border: 3px solid var(--accent);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
         }
 
-        /* Footer */
         footer {
-            background: #000;
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            border-top: 1px solid var(--glass-border);
             color: white;
             padding: 40px 5%;
             text-align: center;
@@ -462,119 +725,156 @@
             justify-content: center;
             gap: 25px;
             margin: 20px 0;
+            flex-wrap: wrap;
         }
         .footer-links a {
-            color: #aaa;
+            color: rgba(255, 255, 255, 0.85);
             text-decoration: none;
-            transition: 0.2s;
+            transition: var(--transition);
         }
         .footer-links a:hover {
-            color: var(--gold);
+            color: var(--accent);
+            transform: scale(1.1);
         }
 
-        .hidden { display: none; }
-
         @media (max-width: 768px) {
+            .navbar {
+                width: 95%;
+                padding: 10px 20px;
+            }
             .nav-links { display: none; }
             .hero h1 { font-size: 3rem; }
+            .events-container, .news-container {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
 
-    <!-- PRELOADER -->
+    <div id="scrollProgress"></div>
+
+    <div class="bubble" style="width: 100px; height: 100px; top: 10%; left: 5%; animation-delay: 0s;"></div>
+    <div class="bubble" style="width: 150px; height: 150px; top: 60%; left: 10%; animation-delay: 2s;"></div>
+    <div class="bubble" style="width: 80px; height: 80px; top: 30%; right: 5%; animation-delay: 4s;"></div>
+    <div class="bubble" style="width: 120px; height: 120px; bottom: 10%; right: 10%; animation-delay: 6s;"></div>
+    <div class="bubble" style="width: 90px; height: 90px; top: 70%; left: 50%; animation-delay: 8s;"></div>
+
     <div id="preloader" onclick="enterSite()">
         <div class="loader-logo"><i class="fas fa-cross"></i></div>
         <div class="loader-text">Thiếu Nhi Hòa An</div>
         <div class="loader-bar-bg"><div class="loader-bar" id="loaderBar"></div></div>
-        <div class="loader-hint">👆 BẤM VÀO ĐÂY ĐỂ BẬT ÂM THANH & VÀO TRANG</div>
+        <div class="loader-percentage" id="loaderPercentage">0%</div>
+        <div class="loader-hint">👆 BẤM ĐỂ BẬT ÂM THANH & VÀO TRANG</div>
     </div>
 
-    <!-- NÚT BẬT/TẮT ÂM THANH -->
     <div id="sound-toggle" onclick="toggleSound()">
         <i class="fas fa-volume-up" id="soundIcon"></i>
     </div>
 
-    <!-- NAVBAR -->
-    <nav class="navbar">
-        <div class="logo">TNTT <span>HÒA AN</span></div>
+    <nav class="navbar" id="navbar">
+        <div class="nav-indicator" id="navIndicator"></div>
+        <div class="navbar-scroll-progress" id="navScrollProgress"></div>
+        <div class="logo" onclick="playMemeSound('bruh')">
+            <i class="fas fa-cross"></i>
+            TNTT <span>HÒA AN</span>
+        </div>
         <div class="nav-links">
-            <a href="#" class="nav-link">Trang chủ</a>
-            <a href="#about" class="nav-link">Giới thiệu</a>
-            <a href="#activities" class="nav-link">Hoạt động</a>
-            <a href="#events" class="nav-link">Sự kiện</a>
-            <a href="#contact" class="nav-link">Liên hệ</a>
+            <a href="#" class="nav-link active" data-section="home" onmouseenter="moveIndicator(this)" onclick="navigateTo(event, this)">
+                <i class="fas fa-home"></i>
+                <span>Trang chủ</span>
+            </a>
+            <a href="#about" class="nav-link" data-section="about" onmouseenter="moveIndicator(this)" onclick="navigateTo(event, this)">
+                <i class="fas fa-info-circle"></i>
+                <span>Giới thiệu</span>
+            </a>
+            <a href="#activities" class="nav-link" data-section="activities" onmouseenter="moveIndicator(this)" onclick="navigateTo(event, this)">
+                <i class="fas fa-users"></i>
+                <span>Hoạt động</span>
+            </a>
+            <a href="#events" class="nav-link" data-section="events" onmouseenter="moveIndicator(this)" onclick="navigateTo(event, this)">
+                <i class="fas fa-calendar-alt"></i>
+                <span>Sự kiện</span>
+            </a>
+            <a href="#news" class="nav-link" data-section="news" onmouseenter="moveIndicator(this)" onclick="navigateTo(event, this)">
+                <i class="fas fa-newspaper"></i>
+                <span>Bản tin</span>
+            </a>
+            <a href="#contact" class="nav-link" data-section="contact" onmouseenter="moveIndicator(this)" onclick="navigateTo(event, this)">
+                <i class="fas fa-envelope"></i>
+                <span>Liên hệ</span>
+            </a>
         </div>
     </nav>
 
-    <!-- HERO -->
     <header class="hero">
         <div class="hero-content">
-            <div class="hero-badge"><i class="fas fa-church"></i> GIÁO XỨ HÒA AN - GIÁO PHẬN BẮC NINH</div>
-            <h1>
+            <div class="hero-badge" onclick="playMemeSound('bruh')"><i class="fas fa-church"></i> Giáo Xứ Hòa An - Giáo Phận Bắc Ninh</div>
+            <h1 onclick="playMemeSound('wow')">
                 THIẾU NHI
                 <span class="script">Thánh Thể</span>
             </h1>
             <p>Nơi ươm mầm đức tin, giúp các em thiếu nhi đến gần Chúa Giêsu Thánh Thể qua học tập, vui chơi và phục vụ.</p>
             <div class="hero-buttons">
-                <a href="https://www.facebook.com/profile.php?id=100091642458006" target="_blank" class="btn btn-gold"><i class="fab fa-facebook-f"></i> Theo dõi Facebook</a>
-                <a href="#about" class="btn btn-outline">Khám phá <i class="fas fa-arrow-down"></i></a>
+                <a href="https://www.facebook.com/profile.php?id=100091642458006" target="_blank" class="btn btn-accent" onmouseenter="playMemeSound('hover')" onclick="playMemeSound('wow')">
+                    <i class="fab fa-facebook-f"></i> Theo dõi Facebook
+                </a>
+                <a href="#about" class="btn btn-glass" onmouseenter="playMemeSound('hover')" onclick="playMemeSound('click')">
+                    Khám phá <i class="fas fa-arrow-down"></i>
+                </a>
             </div>
         </div>
     </header>
 
-    <!-- STATS -->
-    <div class="section" style="margin-top: -30px;">
+    <div class="section">
         <div class="stats-grid">
-            <div class="stat-card" onclick="playClick()">
+            <div class="glass-card" onmouseenter="playMemeSound('hover')" onclick="playMemeSound('wow')">
                 <div class="stat-number">2012</div>
                 <div class="stat-label">Năm thành lập</div>
             </div>
-            <div class="stat-card" onclick="playClick()">
+            <div class="glass-card" onmouseenter="playMemeSound('hover')" onclick="playMemeSound('wow')">
                 <div class="stat-number">67</div>
                 <div class="stat-label">Thành viên hiện tại</div>
             </div>
-            <div class="stat-card" onclick="playClick()">
+            <div class="glass-card" onmouseenter="playMemeSound('hover')" onclick="playMemeSound('wow')">
                 <div class="stat-number"><i class="fas fa-cross"></i></div>
                 <div class="stat-label">Hướng về Thánh Thể</div>
             </div>
         </div>
     </div>
 
-    <!-- GIỚI THIỆU -->
     <div class="section" id="about">
         <div class="section-title">
-            <h2>Về Chúng Tôi</h2>
+            <h2 onclick="playMemeSound('bruh')">Về Chúng Tôi</h2>
             <p>Được thành lập năm 2012, với 67 thành viên, mục đích giúp trẻ đến với Chúa Kitô.</p>
         </div>
         <div class="cha-section">
-            <div class="cha-avatar"><i class="fas fa-user-tie"></i></div>
+            <div class="cha-avatar" onclick="playMemeSound('bruh')"><i class="fas fa-user-tie"></i></div>
             <div>
-                <h3 style="color: var(--gold-dark);">Cha Lê Quang Vinh</h3>
-                <p style="font-weight: 600;">Linh hướng Thiếu Nhi Thánh Thể</p>
-                <p style="color: #555; margin-top: 10px;">Đồng hành và hướng dẫn các em trên con đường đức tin, giúp các em trở thành những người con ngoan của Chúa và Giáo hội.</p>
+                <h3 style="color: var(--accent); font-size: 1.5rem;">Cha Lê Quang Vinh</h3>
+                <p style="font-weight: 600; color: white;">Linh hướng Thiếu Nhi Thánh Thể</p>
+                <p style="color: rgba(255,255,255,0.85); margin-top: 15px; line-height: 1.8;">Đồng hành và hướng dẫn các em trên con đường đức tin, giúp các em trở thành những người con ngoan của Chúa và Giáo hội.</p>
             </div>
         </div>
     </div>
 
-    <!-- HOẠT ĐỘNG -->
     <div class="section" id="activities">
         <div class="section-title">
-            <h2>Hoạt Động Chính</h2>
+            <h2 onclick="playMemeSound('bruh')">Hoạt Động Chính</h2>
             <p>Những sinh hoạt giúp các em phát triển toàn diện về đức tin và đời sống.</p>
         </div>
         <div class="cards-grid">
-            <div class="card" onclick="playClick()">
+            <div class="glass-card" onmouseenter="playMemeSound('hover')" onclick="playMemeSound('click')">
                 <i class="fas fa-church"></i>
                 <h3>Tập Thánh Lễ</h3>
                 <p>Giúp các em tham gia phụng vụ một cách sốt sắng và hiểu biết hơn về Thánh lễ.</p>
             </div>
-            <div class="card" onclick="playClick()">
+            <div class="glass-card" onmouseenter="playMemeSound('hover')" onclick="playMemeSound('click')">
                 <i class="fas fa-hands-helping"></i>
                 <h3>Hoạt động Xã hội</h3>
                 <p>Tham gia các công việc bác ái, giúp đỡ cộng đồng, thăm viếng người già neo đơn.</p>
             </div>
-            <div class="card" onclick="playClick()">
+            <div class="glass-card" onmouseenter="playMemeSound('hover')" onclick="playMemeSound('click')">
                 <i class="fas fa-book-open"></i>
                 <h3>Học Giáo Lý</h3>
                 <p>Đào tạo kiến thức giáo lý căn bản và nâng cao, chuẩn bị cho các bí tích.</p>
@@ -582,42 +882,39 @@
         </div>
     </div>
 
-    <!-- SỰ KIỆN SẮP TỚI -->
     <div class="section" id="events">
         <div class="section-title">
-            <h2>Sự Kiện Sắp Tới</h2>
+            <h2 onclick="playMemeSound('bruh')">Sự Kiện Sắp Tới</h2>
             <p>Những dấu mốc quan trọng trong năm học mới.</p>
         </div>
-        
-        <!-- Container cho sự kiện từ Firebase -->
         <div id="eventsContainer"></div>
-        
-        <!-- Nút thêm sự kiện -->
-        <div style="text-align: center; margin-top: 30px;">
-            <a href="admin.html" class="btn btn-outline" style="color: black; border-color: #ddd;">
-                <i class="fas fa-plus"></i> Thêm sự kiện mới (Admin)
-            </a>
-        </div>
     </div>
 
-    <!-- LIÊN HỆ -->
+    <div class="section" id="news">
+        <div class="section-title">
+            <h2 onclick="playMemeSound('bruh')">Bản Tin Giáo Xứ</h2>
+            <p>Cập nhật những thông tin mới nhất từ Facebook Giáo xứ Hòa An.</p>
+        </div>
+        <div id="newsContainer"></div>
+    </div>
+
     <div class="section" id="contact">
         <div class="section-title">
-            <h2>Liên Hệ</h2>
+            <h2 onclick="playMemeSound('bruh')">Liên Hệ</h2>
             <p>Mọi thông tin xin vui lòng liên lạc với Ban Điều Hành.</p>
         </div>
-        <div class="cards-grid" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));">
-            <div class="card">
+        <div class="cards-grid">
+            <div class="glass-card" onmouseenter="playMemeSound('hover')" onclick="playMemeSound('click')">
                 <i class="fas fa-phone-alt"></i>
                 <h3>Điện thoại</h3>
-                <p><!-- BẠN TỰ ĐIỀN SỐ ĐIỆN THOẠI -->...</p>
+                <p>...</p>
             </div>
-            <div class="card">
+            <div class="glass-card" onmouseenter="playMemeSound('hover')" onclick="playMemeSound('click')">
                 <i class="fas fa-envelope"></i>
                 <h3>Email</h3>
-                <p><!-- BẠN TỰ ĐIỀN EMAIL -->...</p>
+                <p>...</p>
             </div>
-            <div class="card">
+            <div class="glass-card" onmouseenter="playMemeSound('hover')" onclick="playMemeSound('click')">
                 <i class="fas fa-map-marker-alt"></i>
                 <h3>Địa chỉ</h3>
                 <p>Giáo xứ Hòa An, Giáo phận Bắc Ninh</p>
@@ -625,19 +922,17 @@
         </div>
     </div>
 
-    <!-- FOOTER -->
     <footer>
-        <p style="font-weight: 800; font-size: 1.2rem;">Thiếu Nhi Thánh Thể Giáo Xứ Hòa An</p>
-        <p style="color: #aaa;">Giáo phận Bắc Ninh</p>
+        <p style="font-weight: 800; font-size: 1.5rem;" onclick="playMemeSound('bruh')">Thiếu Nhi Thánh Thể Giáo Xứ Hòa An</p>
+        <p style="color: rgba(255,255,255,0.85);">Giáo phận Bắc Ninh</p>
         <div class="footer-links">
-            <a href="https://www.facebook.com/profile.php?id=100091642458006" target="_blank"><i class="fab fa-facebook"></i> Facebook</a>
-            <a href="admin.html"><i class="fas fa-lock"></i> Khu vực quản trị sự kiện</a>
+            <a href="https://www.facebook.com/profile.php?id=100091642458006" target="_blank" onmouseenter="playMemeSound('hover')" onclick="playMemeSound('click')"><i class="fab fa-facebook"></i> Facebook</a>
+            <a href="admin.html" onmouseenter="playMemeSound('hover')" onclick="playMemeSound('click')"><i class="fas fa-lock"></i> Khu vực quản trị</a>
         </div>
-        <p style="margin-top: 20px; font-size: 0.8rem; color: #555;">© 2025 TNTT Hòa An. All rights reserved.</p>
+        <p style="margin-top: 20px; font-size: 0.85rem; color: rgba(255,255,255,0.6);">© 2025 TNTT Hòa An. All rights reserved.</p>
     </footer>
 
     <script>
-        // ========== FIREBASE CONFIG ==========
         const firebaseConfig = {
             apiKey: "AIzaSyATNeLyDKlyeZgpJ0NdtmraAaOq6F8CrrA",
             authDomain: "tntthoaan2.firebaseapp.com",
@@ -648,11 +943,9 @@
             appId: "1:643181042469:web:f31dd1c3be290477fc98cc"
         };
 
-        // Khởi tạo Firebase
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
-        // ================== ÂM THANH ==================
         let audioCtx = null;
         let soundEnabled = true;
 
@@ -662,140 +955,242 @@
             }
         }
 
-        function playClick(freq = 800) {
-            if (!soundEnabled) return;
-            try {
-                initAudio();
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-                gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.2);
-                osc.start();
-                osc.stop(audioCtx.currentTime + 0.2);
-            } catch(e) {}
+        function playTone(freq, volume, type, duration, endFreq = null) {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.type = type;
+            osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+            if (endFreq) {
+                osc.frequency.exponentialRampToValueAtTime(endFreq, audioCtx.currentTime + duration);
+            }
+            gain.gain.setValueAtTime(volume, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+            osc.start();
+            osc.stop(audioCtx.currentTime + duration);
         }
 
-        function playHover() {
+        function playMemeSound(type = 'click') {
             if (!soundEnabled) return;
             try {
                 initAudio();
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-                osc.type = 'triangle';
-                osc.frequency.setValueAtTime(1200, audioCtx.currentTime);
-                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
-                osc.start();
-                osc.stop(audioCtx.currentTime + 0.1);
+                switch(type) {
+                    case 'bruh':
+                        playTone(100, 0.3, 'square', 0.3);
+                        setTimeout(() => playTone(80, 0.2, 'square', 0.2), 150);
+                        break;
+                    case 'wow':
+                        playTone(200, 0.3, 'sine', 0.5, 800);
+                        break;
+                    case 'click':
+                        playTone(600, 0.2, 'square', 0.1);
+                        setTimeout(() => playTone(800, 0.15, 'sine', 0.15), 100);
+                        break;
+                    case 'hover':
+                        playTone(1000, 0.1, 'sine', 0.05);
+                        break;
+                    case 'error':
+                        playTone(400, 0.2, 'sawtooth', 0.4, 100);
+                        break;
+                    case 'success':
+                        [523, 659, 784].forEach((freq, i) => {
+                            setTimeout(() => playTone(freq, 0.2, 'sine', 0.2), i * 100);
+                        });
+                        break;
+                    case 'loading':
+                        playTone(300, 0.1, 'sine', 0.1);
+                        setTimeout(() => playTone(400, 0.1, 'sine', 0.1), 200);
+                        setTimeout(() => playTone(500, 0.1, 'sine', 0.1), 400);
+                        break;
+                    default:
+                        playTone(440, 0.2, 'sine', 0.2);
+                }
             } catch(e) {}
         }
 
         function toggleSound() {
             soundEnabled = !soundEnabled;
             document.getElementById('soundIcon').className = soundEnabled ? 'fas fa-volume-up' : 'fas fa-volume-mute';
-            if (soundEnabled) playClick(1000);
+            if (soundEnabled) playMemeSound('success');
         }
 
-        // ================== PRELOADER ==================
         function enterSite() {
             initAudio();
-            playClick(600);
-            document.getElementById('preloader').style.opacity = '0';
-            document.getElementById('preloader').style.visibility = 'hidden';
-            try {
-                if (soundEnabled) {
-                    setTimeout(() => playClick(800), 100);
-                    setTimeout(() => playClick(1000), 200);
-                }
-            } catch(e) {}
+            playMemeSound('success');
+            document.getElementById('preloader').classList.add('hidden');
+            setTimeout(() => {
+                document.getElementById('preloader').style.display = 'none';
+            }, 800);
         }
 
-        // Mô phỏng thanh loading
         let loadProgress = 0;
         const loadInterval = setInterval(() => {
             loadProgress += Math.random() * 15;
             if (loadProgress > 100) loadProgress = 100;
             document.getElementById('loaderBar').style.width = loadProgress + '%';
-            if (loadProgress >= 100) clearInterval(loadInterval);
+            document.getElementById('loaderPercentage').textContent = Math.floor(loadProgress) + '%';
+            if (loadProgress % 25 < 1) playMemeSound('loading');
+            if (loadProgress >= 100) {
+                clearInterval(loadInterval);
+                playMemeSound('success');
+            }
         }, 300);
 
-        // ================== LOAD SỰ KIỆN TỪ FIREBASE ==================
+        let currentSection = 'home';
+        let isNavigating = false;
+
+        function moveIndicator(element) {
+            if (isNavigating) return;
+            const indicator = document.getElementById('navIndicator');
+            const linkRect = element.getBoundingClientRect();
+            const navbarRect = document.querySelector('.navbar').getBoundingClientRect();
+            const left = linkRect.left - navbarRect.left;
+            const width = linkRect.width;
+            indicator.style.left = left + 'px';
+            indicator.style.width = width + 'px';
+            playMemeSound('hover');
+        }
+
+        function resetIndicator() {
+            const currentLink = document.querySelector(`.nav-link[data-section="${currentSection}"]`);
+            if (currentLink) {
+                moveIndicator(currentLink);
+            }
+        }
+
+        function navigateTo(event, element) {
+            event.preventDefault();
+            if (isNavigating) return;
+            isNavigating = true;
+            const section = element.getAttribute('data-section');
+            const targetId = element.getAttribute('href').replace('#', '');
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            element.classList.add('active');
+            currentSection = section;
+            moveIndicator(element);
+            playMemeSound('click');
+            if (targetId === '') {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+                const targetElement = document.getElementById(targetId);
+                if (targetElement) {
+                    targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }
+            setTimeout(() => {
+                isNavigating = false;
+            }, 800);
+        }
+
+        function updateActiveSectionOnScroll() {
+            const sections = ['home', 'about', 'activities', 'events', 'news', 'contact'];
+            const scrollPosition = window.scrollY + 200;
+            let currentActiveSection = 'home';
+            sections.forEach(section => {
+                const element = section === 'home' ? null : document.getElementById(section);
+                if (element) {
+                    const elementTop = element.offsetTop;
+                    const elementHeight = element.offsetHeight;
+                    if (scrollPosition >= elementTop && scrollPosition < elementTop + elementHeight) {
+                        currentActiveSection = section;
+                    }
+                }
+            });
+            document.querySelectorAll('.nav-link').forEach(link => {
+                const linkSection = link.getAttribute('data-section');
+                if (linkSection === currentActiveSection) {
+                    link.classList.add('active');
+                } else {
+                    link.classList.remove('active');
+                }
+            });
+            const activeLink = document.querySelector(`.nav-link[data-section="${currentActiveSection}"]`);
+            if (activeLink && !isNavigating) {
+                moveIndicator(activeLink);
+            }
+            currentSection = currentActiveSection;
+            const scrollProgress = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+            document.getElementById('navScrollProgress').style.width = scrollProgress + '%';
+        }
+
+        function navbarMouseFollow(e) {
+            const navbar = document.querySelector('.navbar');
+            const rect = navbar.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            navbar.style.setProperty('--mouse-x', x + 'px');
+            navbar.style.setProperty('--mouse-y', y + 'px');
+        }
+
+        document.querySelector('.navbar').addEventListener('mousemove', navbarMouseFollow);
+        document.querySelector('.navbar').addEventListener('mouseleave', resetIndicator);
+        window.addEventListener('scroll', updateActiveSectionOnScroll);
+
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const activeLink = document.querySelector('.nav-link.active');
+                if (activeLink) {
+                    moveIndicator(activeLink);
+                }
+            }, 1000);
+        });
+
+        let lastScrollSound = 0;
+        window.addEventListener('scroll', () => {
+            const scrollTop = window.scrollY;
+            const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const progress = (scrollTop / scrollHeight) * 100;
+            document.getElementById('scrollProgress').style.width = progress + '%';
+            const navbar = document.getElementById('navbar');
+            if (scrollTop > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+            const now = Date.now();
+            if (now - lastScrollSound > 1000) {
+                playMemeSound('hover');
+                lastScrollSound = now;
+            }
+        });
+
+        document.addEventListener('mouseover', (e) => {
+            if (e.target.closest('.glass-card, .btn, .nav-link, .event-card, .news-card, .footer-links a')) {
+                playMemeSound('hover');
+            }
+        });
+
         function loadEventsFromFirebase() {
             const eventsContainer = document.getElementById('eventsContainer');
-            
-            // Hiển thị loading
-            eventsContainer.innerHTML = '<p style="text-align: center; color: #666; padding: 20px;">Đang tải sự kiện...</p>';
-            
-            // Lắng nghe sự kiện từ Firebase (real-time)
+            eventsContainer.innerHTML = '<p style="text-align: center; color: white; padding: 20px;">Đang tải sự kiện...</p>';
+            playMemeSound('loading');
             database.ref('events').on('value', (snapshot) => {
                 const events = snapshot.val();
-                
                 if (!events) {
-                    // Không có sự kiện, hiển thị mặc định
-                    eventsContainer.innerHTML = `
-                        <div class="event-highlight">
-                            <div class="event-date">
-                                6/9<br><small>Thứ Bảy</small>
-                            </div>
-                            <div class="event-info">
-                                <h3>Khai Giảng Năm Học Mới</h3>
-                                <p>Thánh lễ khai giảng và chào đón các em thiếu nhi bước vào năm học 2025 - 2026.</p>
-                                <p><i class="fas fa-clock"></i> 19:30 | <i class="fas fa-map-marker-alt"></i> Nhà thờ Giáo xứ Hòa An</p>
-                            </div>
-                        </div>
-                    `;
+                    eventsContainer.innerHTML = '<p style="text-align: center; color: white;">Chưa có sự kiện sắp tới.</p>';
                     return;
                 }
-                
-                // Chuyển object thành array
-                const eventsArray = Object.entries(events).map(([id, event]) => ({
-                    id: id,
-                    ...event
-                }));
-                
-                // Lọc sự kiện tương lai (chưa diễn ra)
+                const eventsArray = Object.entries(events).map(([id, event]) => ({id, ...event}));
                 const today = new Date();
                 today.setHours(0, 0, 0, 0);
-                
-                const upcomingEvents = eventsArray.filter(event => {
-                    const eventDate = new Date(event.date);
-                    return eventDate >= today;
-                });
-                
-                // Sắp xếp theo ngày gần nhất
+                const upcomingEvents = eventsArray.filter(event => new Date(event.date) >= today);
                 upcomingEvents.sort((a, b) => new Date(a.date) - new Date(b.date));
-                
                 if (upcomingEvents.length === 0) {
-                    eventsContainer.innerHTML = '<p style="text-align: center; color: #666;">Chưa có sự kiện sắp tới.</p>';
+                    eventsContainer.innerHTML = '<p style="text-align: center; color: white;">Chưa có sự kiện sắp tới.</p>';
                     return;
                 }
-                
-                // Hiển thị sự kiện
                 eventsContainer.innerHTML = '<div class="events-container"></div>';
                 const eventsGrid = eventsContainer.querySelector('.events-container');
-                
-                // Hiển thị tối đa 6 sự kiện
                 const eventsToShow = upcomingEvents.slice(0, 6);
-                
                 eventsToShow.forEach(event => {
                     const eventCard = document.createElement('div');
                     eventCard.className = 'event-card';
-                    eventCard.onclick = () => playClick();
-                    eventCard.onmouseenter = () => playHover();
-                    
-                    const eventDate = new Date(event.date);
-                    const formattedDate = eventDate.toLocaleDateString('vi-VN', { 
-                        day: '2-digit', 
-                        month: '2-digit', 
-                        year: 'numeric' 
-                    });
-                    
+                    eventCard.onmouseenter = () => playMemeSound('hover');
+                    eventCard.onclick = () => playMemeSound('wow');
+                    const formattedDate = new Date(event.date).toLocaleDateString('vi-VN', {day: '2-digit', month: '2-digit', year: 'numeric'});
                     eventCard.innerHTML = `
                         <img src="${event.image}" alt="${event.name}" class="event-card-img" onerror="this.src='https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=2070&auto=format&fit=crop'">
                         <div class="event-card-body">
@@ -805,28 +1200,60 @@
                             <p>${event.description}</p>
                         </div>
                     `;
-                    
                     eventsGrid.appendChild(eventCard);
                 });
-            }, (error) => {
-                console.error('Lỗi khi đọc sự kiện:', error);
-                eventsContainer.innerHTML = '<p style="text-align: center; color: red;">Lỗi khi tải sự kiện. Vui lòng thử lại sau.</p>';
             });
         }
 
-        // Load sự kiện khi trang được tải
+        function loadNewsFromFirebase() {
+            const newsContainer = document.getElementById('newsContainer');
+            newsContainer.innerHTML = '<p style="text-align: center; color: white; padding: 20px;">Đang tải bản tin...</p>';
+            playMemeSound('loading');
+            database.ref('news').on('value', (snapshot) => {
+                const news = snapshot.val();
+                if (!news) {
+                    newsContainer.innerHTML = '<p style="text-align: center; color: white;">Chưa có bản tin nào.</p>';
+                    return;
+                }
+                const newsArray = Object.entries(news).map(([id, newsItem]) => ({id, ...newsItem}));
+                newsArray.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+                newsContainer.innerHTML = '<div class="news-container"></div>';
+                const newsGrid = newsContainer.querySelector('.news-container');
+                const newsToShow = newsArray.slice(0, 6);
+                newsToShow.forEach(newsItem => {
+                    const newsCard = document.createElement('div');
+                    newsCard.className = 'news-card';
+                    newsCard.onmouseenter = () => playMemeSound('hover');
+                    newsCard.onclick = () => { window.open(newsItem.link, '_blank'); playMemeSound('wow'); };
+                    const typeBadge = newsItem.type === 'video' 
+                        ? '<span class="news-type-badge video"><i class="fas fa-video"></i> Video</span>'
+                        : '<span class="news-type-badge post"><i class="fas fa-file-alt"></i> Bài viết</span>';
+                    const icon = newsItem.type === 'video' ? '<i class="fas fa-video"></i>' : '<i class="fas fa-newspaper"></i>';
+                    const iconClass = newsItem.type === 'video' ? 'video' : '';
+                    newsCard.innerHTML = `
+                        <div class="news-card-icon ${iconClass}">${icon}</div>
+                        <div class="news-card-body">
+                            ${typeBadge}
+                            <h3>${newsItem.title}</h3>
+                            <p>${newsItem.description}</p>
+                            <a href="${newsItem.link}" target="_blank" class="news-card-link">
+                                <i class="fab fa-facebook"></i> Xem chi tiết
+                            </a>
+                        </div>
+                    `;
+                    newsGrid.appendChild(newsCard);
+                });
+            });
+        }
+
         window.onload = function() {
             loadEventsFromFirebase();
-            
-            // Thêm âm thanh cho các nút
-            document.querySelectorAll('.btn, .card, .stat-card, .nav-link').forEach(el => {
-                el.addEventListener('mouseenter', () => playHover());
-                el.addEventListener('click', () => playClick());
-            });
+            loadNewsFromFirebase();
+            playMemeSound('success');
         };
 
-        console.log('🕊️ Thiếu Nhi Thánh Thể Hòa An - Website đã kết nối Firebase');
-        console.log('🔑 Link Admin: admin.html | Mật khẩu: hoaan2024');
+        console.log('🕊️ TNTT Hòa An - Smart Navbar');
+        console.log('🔊 Full Meme Sounds');
     </script>
 </body>
 </html>
