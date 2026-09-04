@@ -1042,11 +1042,353 @@
         padding: 80px 0;
       }
     }
+
+    /* =========================
+       NGÀY RA MẮT WEBSITE (06/09/2026)
+    ========================== */
+    body.launch-day {
+      background: linear-gradient(135deg, #c0392b 0%, var(--primary) 35%, var(--accent) 100%);
+    }
+
+    .launch-ribbon {
+      position: fixed;
+      z-index: 1002;
+      top: 0;
+      left: 0;
+      width: 100%;
+      padding: 10px 16px;
+      text-align: center;
+      font-size: 0.82rem;
+      font-weight: 800;
+      letter-spacing: 0.3px;
+      color: #2c3e50;
+      background: linear-gradient(90deg, var(--accent), #fff6d8, var(--accent));
+      background-size: 200% 100%;
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25);
+      animation: ribbonShimmer 3.5s linear infinite;
+    }
+
+    .launch-ribbon i {
+      margin: 0 6px;
+      color: #c0392b;
+    }
+
+    @keyframes ribbonShimmer {
+      0% { background-position: 0% 0; }
+      100% { background-position: 200% 0; }
+    }
+
+    #launchConfetti {
+      position: fixed;
+      inset: 0;
+      z-index: 4500;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .confetti-piece {
+      position: absolute;
+      top: -20px;
+      width: 9px;
+      height: 14px;
+      opacity: 0.9;
+      border-radius: 2px;
+      animation-name: confettiFall;
+      animation-timing-function: linear;
+      animation-iteration-count: infinite;
+    }
+
+    @keyframes confettiFall {
+      0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(110vh) rotate(540deg); opacity: 0.85; }
+    }
+
+    #launchWelcomeOverlay {
+      position: fixed;
+      z-index: 6000;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      background: rgba(20, 20, 30, 0.72);
+      backdrop-filter: blur(6px);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.5s ease, visibility 0.5s ease;
+    }
+
+    #launchWelcomeOverlay.show {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .launch-modal-card {
+      position: relative;
+      width: min(92%, 480px);
+      padding: 40px 30px 34px;
+      text-align: center;
+      color: #2c3e50;
+      background: linear-gradient(160deg, #fffdf6, #fff3d6);
+      border: 2px solid var(--accent);
+      border-radius: var(--radius-lg);
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.4);
+      transform: scale(0.85) translateY(20px);
+      transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    #launchWelcomeOverlay.show .launch-modal-card {
+      transform: scale(1) translateY(0);
+    }
+
+    .launch-modal-icon {
+      display: grid;
+      place-items: center;
+      width: 78px;
+      height: 78px;
+      margin: 0 auto 18px;
+      border-radius: 50%;
+      color: #fff;
+      font-size: 2.1rem;
+      background: linear-gradient(135deg, var(--primary), #c0392b);
+      box-shadow: 0 10px 25px rgba(255, 107, 107, 0.4);
+      animation: pulse 1.8s ease-in-out infinite;
+    }
+
+    .launch-modal-card h2 {
+      margin-bottom: 6px;
+      font-family: "Dancing Script", cursive;
+      font-size: 2.1rem;
+      color: #c0392b;
+    }
+
+    .launch-modal-card .launch-date-tag {
+      display: inline-block;
+      margin-bottom: 16px;
+      padding: 4px 14px;
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      color: #8a5a00;
+      background: rgba(255, 230, 109, 0.5);
+      border-radius: 50px;
+    }
+
+    .launch-modal-card p {
+      margin-bottom: 26px;
+      line-height: 1.7;
+      color: #4a4a4a;
+      font-size: 0.98rem;
+    }
+
+    .launch-modal-card button {
+      padding: 13px 34px;
+      font-weight: 800;
+      color: #fff;
+      border-radius: 50px;
+      background: linear-gradient(135deg, var(--primary), #c0392b);
+      box-shadow: 0 10px 25px rgba(255, 107, 107, 0.35);
+      transition: transform 0.25s ease;
+    }
+
+    .launch-modal-card button:hover {
+      transform: translateY(-3px);
+    }
+
+    body.launch-day .navbar {
+      top: 58px;
+    }
+
+    /* Bộ đếm ngược ra mắt (trước 06/09/2026) */
+    @media (max-width: 640px) {
+      .launch-ribbon {
+        font-size: 0.72rem;
+        padding: 8px 12px;
+      }
+    }
+
+    /* =========================
+       CỔNG KHOÁ WEBSITE (trước 06/09/2026)
+       Không ai xem được nội dung cho đến ngày ra mắt
+    ========================== */
+    body.gate-locked {
+      overflow: hidden;
+    }
+
+    #launchGate {
+      position: fixed;
+      z-index: 9999;
+      inset: 0;
+      display: none;
+      place-items: center;
+      padding: 24px;
+      text-align: center;
+      color: #fff;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(255, 230, 109, 0.18), transparent 40%),
+        radial-gradient(circle at 80% 80%, rgba(78, 205, 196, 0.16), transparent 40%),
+        linear-gradient(150deg, #1a1a2e 0%, #2c3e50 55%, #c0392b 130%);
+    }
+
+    #launchGate.show {
+      display: grid;
+    }
+
+    .gate-content {
+      width: min(94%, 460px);
+    }
+
+    .gate-icon {
+      display: grid;
+      place-items: center;
+      width: 88px;
+      height: 88px;
+      margin: 0 auto 20px;
+      border-radius: 50%;
+      font-size: 2.3rem;
+      color: var(--accent);
+      border: 3px solid var(--accent);
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      box-shadow: 0 0 35px rgba(255, 230, 109, 0.45);
+      animation: pulse 1.8s ease-in-out infinite;
+    }
+
+    .gate-tag {
+      display: inline-block;
+      margin-bottom: 14px;
+      padding: 5px 16px;
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      color: #2c3e50;
+      background: var(--accent);
+      border-radius: 50px;
+    }
+
+    .gate-content h1 {
+      margin-bottom: 10px;
+      font-family: "Dancing Script", cursive;
+      font-size: 2.6rem;
+      color: #fff;
+    }
+
+    .gate-content p {
+      margin: 0 auto 26px;
+      max-width: 380px;
+      line-height: 1.7;
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 0.95rem;
+    }
+
+    .gate-content p strong {
+      color: var(--accent);
+    }
+
+    .gate-countdown {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 30px;
+    }
+
+    .gate-unit {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-width: 66px;
+      padding: 12px 8px;
+      border-radius: 16px;
+      border: 1px solid var(--glass-border);
+      background: var(--glass-bg);
+      backdrop-filter: var(--glass-blur);
+    }
+
+    .gate-unit b {
+      font-size: 1.7rem;
+      font-weight: 900;
+      color: var(--accent);
+      line-height: 1;
+    }
+
+    .gate-unit span {
+      margin-top: 6px;
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.4px;
+      color: rgba(255, 255, 255, 0.75);
+      text-transform: uppercase;
+    }
+
+    .gate-footer {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      color: rgba(255, 255, 255, 0.55);
+    }
+
+    @media (max-width: 480px) {
+      .gate-countdown {
+        gap: 8px;
+      }
+
+      .gate-unit {
+        min-width: 56px;
+        padding: 10px 4px;
+      }
+
+      .gate-unit b {
+        font-size: 1.3rem;
+      }
+    }
   </style>
 </head>
 
 <body>
   <div id="scrollProgress"></div>
+
+  <!-- Cổng khoá: không ai xem được nội dung web cho đến 00:00 ngày 06/09/2026 -->
+  <div id="launchGate">
+    <div class="gate-content">
+      <div class="gate-icon"><i class="fas fa-lock"></i></div>
+      <span class="gate-tag">🚧 Website đang được chuẩn bị</span>
+      <h1>TNTT Hòa An</h1>
+      <p>
+        Website chính thức của Đoàn Thiếu Nhi Thánh Thể Giáo xứ Hòa An
+        sẽ ra mắt vào <strong>06/09/2026</strong>. Xin quý phụ huynh và các em
+        quay lại đúng ngày để cùng khám phá nhé!
+      </p>
+      <div class="gate-countdown">
+        <div class="gate-unit"><b id="gateDays">00</b><span>Ngày</span></div>
+        <div class="gate-unit"><b id="gateHours">00</b><span>Giờ</span></div>
+        <div class="gate-unit"><b id="gateMinutes">00</b><span>Phút</span></div>
+        <div class="gate-unit"><b id="gateSeconds">00</b><span>Giây</span></div>
+      </div>
+      <div class="gate-footer">Ban Truyền Thông Đoàn TNTT Giáo xứ Hòa An</div>
+    </div>
+  </div>
+
+  <!-- Chỉ hiện vào ngày ra mắt website 06/09/2026, do JS bật lên -->
+  <div class="launch-ribbon" id="launchRibbon" style="display:none">
+    <i class="fas fa-star"></i>
+    Hôm nay 06/09/2026 — Website chính thức ra mắt!
+    <i class="fas fa-star"></i>
+  </div>
+
+  <div id="launchConfetti"></div>
+
+  <div id="launchWelcomeOverlay">
+    <div class="launch-modal-card">
+      <div class="launch-modal-icon"><i class="fas fa-cross"></i></div>
+      <span class="launch-date-tag">🎉 Ngày ra mắt Website — 06/09/2026</span>
+      <h2>Chào mừng!</h2>
+      <p>
+        Chào mừng đến với website của Đoàn Thiếu Nhi Thánh Thể Giáo xứ Hòa An.
+        Đây là website do chính Ban Truyền Thông thực hiện.
+      </p>
+      <button id="launchWelcomeClose" type="button">
+        <i class="fas fa-door-open"></i> Vào trang
+      </button>
+    </div>
+  </div>
 
   <div class="bubble"></div>
   <div class="bubble"></div>
@@ -1384,7 +1726,115 @@
     /* =========================
        ÂM THANH MEME
     ========================== */
-    let soundEnabled = false;
+    let soundEnabled = true;
+
+    /* =========================
+       NGÀY RA MẮT WEBSITE (06/09/2026)
+    ========================== */
+    const LAUNCH_DATE = new Date(2026, 8, 6, 0, 0, 0);
+
+    function isLaunchDay() {
+      const now = new Date();
+      return now.getFullYear() === 2026 && now.getMonth() === 8 && now.getDate() === 6;
+    }
+
+    function isBeforeLaunch() {
+      return new Date() < LAUNCH_DATE && !isLaunchDay();
+    }
+
+    function pad2(n) {
+      return String(n).padStart(2, "0");
+    }
+
+    let gateTimer;
+
+    function tickGateCountdown() {
+      const diff = LAUNCH_DATE - new Date();
+
+      if (diff <= 0) {
+        clearInterval(gateTimer);
+        location.reload();
+        return;
+      }
+
+      const days = Math.floor(diff / 86400000);
+      const hours = Math.floor((diff % 86400000) / 3600000);
+      const minutes = Math.floor((diff % 3600000) / 60000);
+      const seconds = Math.floor((diff % 60000) / 1000);
+
+      const days_el = document.querySelector("#gateDays");
+      const hours_el = document.querySelector("#gateHours");
+      const minutes_el = document.querySelector("#gateMinutes");
+      const seconds_el = document.querySelector("#gateSeconds");
+
+      if (days_el) days_el.textContent = pad2(days);
+      if (hours_el) hours_el.textContent = pad2(hours);
+      if (minutes_el) minutes_el.textContent = pad2(minutes);
+      if (seconds_el) seconds_el.textContent = pad2(seconds);
+    }
+
+    function activateGate() {
+      document.body.classList.add("gate-locked");
+
+      const gate = document.querySelector("#launchGate");
+      if (gate) gate.classList.add("show");
+
+      tickGateCountdown();
+      gateTimer = setInterval(tickGateCountdown, 1000);
+    }
+
+    function spawnLaunchConfetti() {
+      const container = document.querySelector("#launchConfetti");
+      if (!container) return;
+
+      const colors = ["#ff6b6b", "#4ecdc4", "#ffe66d", "#ffffff", "#c0392b"];
+      const total = 60;
+
+      for (let i = 0; i < total; i++) {
+        const piece = document.createElement("div");
+        piece.className = "confetti-piece";
+        piece.style.left = `${Math.random() * 100}%`;
+        piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+        piece.style.animationDuration = `${4 + Math.random() * 4}s`;
+        piece.style.animationDelay = `${Math.random() * 6}s`;
+        piece.style.borderRadius = Math.random() > 0.5 ? "50%" : "2px";
+        container.appendChild(piece);
+      }
+    }
+
+    function activateLaunchDay() {
+      document.body.classList.add("launch-day");
+
+      const ribbon = document.querySelector("#launchRibbon");
+      if (ribbon) ribbon.style.display = "block";
+
+      const loaderText = document.querySelector(".loader-content p");
+      if (loaderText) loaderText.textContent = "Hôm nay website chính thức ra mắt...";
+
+      spawnLaunchConfetti();
+    }
+
+    function showLaunchWelcome() {
+      const overlay = document.querySelector("#launchWelcomeOverlay");
+      if (!overlay) return;
+
+      if (sessionStorage.getItem("tntt_launch_welcome_shown") === "1") return;
+
+      overlay.classList.add("show");
+      playMemeSound("wow");
+      sessionStorage.setItem("tntt_launch_welcome_shown", "1");
+    }
+
+    if (isLaunchDay()) {
+      activateLaunchDay();
+    } else if (isBeforeLaunch()) {
+      activateGate();
+    }
+
+    document.querySelector("#launchWelcomeClose")?.addEventListener("click", () => {
+      document.querySelector("#launchWelcomeOverlay")?.classList.remove("show");
+      playMemeSound("click");
+    });
     let audioContext;
 
     function getAudioContext() {
@@ -1505,6 +1955,10 @@
 
         setTimeout(() => {
           preloader.classList.add("hidden");
+
+          if (isLaunchDay()) {
+            setTimeout(showLaunchWelcome, 500);
+          }
         }, 550);
 
         clearInterval(loaderTimer);
@@ -1520,7 +1974,9 @@
       }
     });
 
-    loaderTimer = setInterval(updateLoader, 260);
+    if (!isBeforeLaunch()) {
+      loaderTimer = setInterval(updateLoader, 260);
+    }
 
     /* =========================
        NAVBAR
